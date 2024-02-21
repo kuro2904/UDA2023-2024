@@ -1,4 +1,7 @@
 package vn.stu.edu.Food_App.repositories;
 
-public interface DiscountRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import vn.stu.edu.Food_App.entities.Discount;
+
+public interface DiscountRepository extends JpaRepository<Discount,String> {
 }

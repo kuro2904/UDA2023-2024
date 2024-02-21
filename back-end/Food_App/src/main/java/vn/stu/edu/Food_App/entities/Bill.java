@@ -30,4 +30,6 @@ public class Bill {
     private List<BillDetail> details = new ArrayList<>();
     @ManyToMany(mappedBy = "bills", cascade = CascadeType.ALL)
     private List<DeliverMan> deliverMen = new ArrayList<>();
+    @Enumerated
+    private PaymentMethod paymentMethod;
 }
