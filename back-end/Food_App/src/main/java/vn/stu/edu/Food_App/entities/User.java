@@ -32,4 +32,5 @@ public class User {
     private List<Bill> bills;
     @ManyToMany(mappedBy = "users_used")
     private Set<Discount> discountsUsed = new HashSet<>();
+
 }

@@ -59,9 +59,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO findByEmailOrPhone(String emailOrPhone) {
-        Optional<User> user = userRepository.findByEmail(emailOrPhone);
-        if (user.isEmpty()) user = userRepository.findByPhone(emailOrPhone);
-        if(user.isEmpty()) throw  new RuntimeException("Cannot Found User By Email Or Phone: " + emailOrPhone);
-        return mapper.map(user,UserDTO.class);
+//        Optional<User> user = userRepository.findByEmail(emailOrPhone);
+//        if (user.isEmpty()) user = userRepository.findByPhone(emailOrPhone);
+//        if(user.isEmpty()) throw  new RuntimeException("Cannot Found User By Email Or Phone: " + emailOrPhone);
+        return null;
     }
 }

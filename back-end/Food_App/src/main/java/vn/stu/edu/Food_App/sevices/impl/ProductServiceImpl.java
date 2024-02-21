@@ -78,7 +78,7 @@ public class ProductServiceImpl implements ProductService  {
         Category category = categoryRepository.findById(categoryId).orElseThrow(
                 () -> new RuntimeException("Cannot Found Category By Id: " + categoryId)
         );
-        return productRepository.findByCategory(category).stream().map(
+        return productRepository.timTheoCategory(category).stream().map(
                 product -> mapper.map(product, ProductDTO.class)
         ).collect(Collectors.toList());
     }

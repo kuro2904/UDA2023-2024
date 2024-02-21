@@ -1,19 +1,17 @@
 package vn.stu.edu.Food_App.dtos;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiscountDTO {
     private String id;
     private long discount_percent;
-    private LocalDateTime start_date;
-    private LocalDateTime expire_date;
+    private String start_date;
+    private String expire_date;
 }

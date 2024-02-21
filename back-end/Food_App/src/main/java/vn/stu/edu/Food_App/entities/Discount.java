@@ -1,9 +1,11 @@
 package vn.stu.edu.Food_App.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -17,8 +19,8 @@ public class Discount {
     @Id
     private String id;
     private long discount_percent;
-    private LocalDateTime start_date;
-    private LocalDateTime expire_date;
+    private String start_date;
+    private String expire_date;
     @ManyToMany
     @JoinTable(name = "discount_bill",
     joinColumns = @JoinColumn(name = "discount_id",referencedColumnName = "id"),
