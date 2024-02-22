@@ -142,7 +142,7 @@ class LoginPageState extends State<LoginPage> {
               children: [
                 ElevatedButton(
                   onPressed: GoogleLogin,
-                  child: Logo(Logos.google),
+                  child: Brand(Brands.google),
                   style: ElevatedButton.styleFrom(
                     shape: CircleBorder(),
                   ),
