@@ -14,10 +14,6 @@ import java.util.Set;
 public class UserDTO {
     private String id;
     private String email;
-    private String password;
-    private String phone_number;
+    private String phoneNumber;
     private String address;
-    private RoleDTO role;
-
-
 }

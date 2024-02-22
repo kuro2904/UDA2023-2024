@@ -9,6 +9,6 @@ public interface UserService {
     UserDTO updateUser(String id, UserDTO userDTO);
     String deleteUser(String id);
     List<UserDTO> getAllUser();
-    UserDTO findById(String id);
-    UserDTO findByEmailOrPhone(String emailOrPhone);
+    UserDTO findStaffById(String id);
+    UserDTO findByStaffEmailOrPhone(String emailOrPhone);
 }

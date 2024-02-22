@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.DeliverManDTO;
 import vn.stu.edu.Food_App.entities.DeliverMan;
+import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.DeliverManRepository;
 import vn.stu.edu.Food_App.sevices.DeliverManService;
 
@@ -32,7 +33,7 @@ public class DeliverManServiceImpl implements DeliverManService {
     @Override
     public DeliverManDTO editDeliveryMan(String id, DeliverManDTO dto) {
         DeliverMan deliverMan = deliverManRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cannot Found Delivery Man: " + id)
+                () -> new ResourceNotFoundException("Delivery Man","Id",id)
         );
         if(dto.getName() != null) deliverMan.setName(dto.getName());
         return mapper.map(deliverMan,DeliverManDTO.class);
@@ -41,7 +42,7 @@ public class DeliverManServiceImpl implements DeliverManService {
     @Override
     public String deleteDeliveryMan(String id) {
         DeliverMan deliverMan = deliverManRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cannot Found Delivery Man: " + id)
+                () -> new ResourceNotFoundException("Delivery Man","Id",id)
         );
         deliverManRepository.delete(deliverMan);
         return "Delete Complete";
@@ -57,7 +58,7 @@ public class DeliverManServiceImpl implements DeliverManService {
     @Override
     public DeliverManDTO getById(String id) {
         DeliverMan deliverMan = deliverManRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cannot Found Delivery Man: " + id)
+                () -> new ResourceNotFoundException("Delivery Man","Id",id)
         );
         return mapper.map(deliverMan,DeliverManDTO.class);
     }

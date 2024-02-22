@@ -4,6 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.DiscountDTO;
 import vn.stu.edu.Food_App.entities.Discount;
+import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.DiscountRepository;
 import vn.stu.edu.Food_App.sevices.DiscountService;
 
@@ -43,7 +44,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public DiscountDTO getDiscountById(String id) {
         Discount discount = discountRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cannot Found Discount By Id: " + id)
+                () -> new ResourceNotFoundException("Discount","Id",id)
         );
         return mapper.map(discount, DiscountDTO.class);
     }

@@ -3,6 +3,7 @@ package vn.stu.edu.Food_App.sevices.impl;
 import org.modelmapper.ModelMapper;
 import vn.stu.edu.Food_App.dtos.UserDTO;
 import vn.stu.edu.Food_App.entities.User;
+import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.RoleRepository;
 import vn.stu.edu.Food_App.repositories.UserRepository;
 import vn.stu.edu.Food_App.sevices.UserService;
@@ -35,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String deleteUser(String id) {
         User user = userRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Cannot Found User By Id: " + id)
+                () -> new ResourceNotFoundException("User","Id", id)
         );
         userRepository.delete(user);
         return "Delete Complete";
@@ -50,15 +51,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findById(String id) {
+    public UserDTO findStaffById(String id) {
         User user = userRepository.findById(id).orElseThrow(
-                ()-> new RuntimeException("Cannot Found User By Id: " + id)
+                () -> new ResourceNotFoundException("User","Id", id)
         );
         return mapper.map(user,UserDTO.class);
     }
 
     @Override
-    public UserDTO findByEmailOrPhone(String emailOrPhone) {
+    public UserDTO findByStaffEmailOrPhone(String emailOrPhone) {
 //        Optional<User> user = userRepository.findByEmail(emailOrPhone);
 //        if (user.isEmpty()) user = userRepository.findByPhone(emailOrPhone);
 //        if(user.isEmpty()) throw  new RuntimeException("Cannot Found User By Email Or Phone: " + emailOrPhone);
