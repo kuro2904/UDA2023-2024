@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/screens/home_components/category_item.dart';
+import 'package:food_app/screens/home_components/expandable_FloatingActionButton.dart';
+import 'package:food_app/screens/login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -86,6 +87,21 @@ class HomePageState extends State<HomePage> {
             // )
           ],
         ),
+      ),
+      floatingActionButton: ExpandableFab(
+        initialOpen: false,
+        distance: 10,
+        children: [ // TODO: hiển thị nút đăng nhập và đăng ký nếu người dùng chưa đăng nhập và nut trang cá nhân nếu ngừoi dùng đã đăng nhập
+          ElevatedButton( // Just for testing
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage())); // Đến login screen
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+            ),
+            child: const Icon(Icons.login),
+          ),
+        ],
       ),
     );
   }
