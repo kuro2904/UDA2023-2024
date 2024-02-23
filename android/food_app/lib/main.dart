@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/screens/home.dart';
+import 'package:food_app/screens/login.dart';
 import 'package:food_app/screens/signup.dart';
 
 void main() {
@@ -33,9 +34,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:const Scaffold(
-        body: HomePage(),
-      ),
+      home: const HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

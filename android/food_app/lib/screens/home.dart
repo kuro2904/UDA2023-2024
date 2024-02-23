@@ -5,7 +5,6 @@ import 'package:food_app/screens/login.dart';
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
-
   @override
   State<StatefulWidget> createState() {
     return HomePageState();
@@ -14,28 +13,71 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
+  int _selectedIndex = 0;
+
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Food App', style: TextStyle(color: Colors.red,fontSize: 30),),
+      ),
+      drawer: Drawer(
+        child:ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+            ),
+            ListTile(
+              title: const Text('Home'),
+              selected: _selectedIndex == 0,
+              onTap: () {
+                _onItemTapped(0);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Account'),
+              selected: _selectedIndex == 1,
+              onTap: () {
+                _onItemTapped(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('About'),
+              selected: _selectedIndex == 2,
+              onTap: () {
+                _onItemTapped(2);
+                Navigator.pop(context);
+              },
+            ),
+            const Expanded(child: Divider()),
+            ListTile(
+              title: const Text('Log out'),
+              selected: _selectedIndex == 3,
+              onTap: (){
+                _onItemTapped(3);
+                Navigator.pop(context);
+              },
+            )
+          ],
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
         child: Column(
           children: [
-            const Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Welcome'),
-                    Text(
-                      'Food App',
-                      style: TextStyle(color: Colors.red, fontSize: 30),
-                    )
-                  ],
-                ),
-              ],
-            ),
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: Row(
@@ -91,10 +133,16 @@ class HomePageState extends State<HomePage> {
       floatingActionButton: ExpandableFab(
         initialOpen: false,
         distance: 10,
-        children: [ // TODO: hiển thị nút đăng nhập và đăng ký nếu người dùng chưa đăng nhập và nut trang cá nhân nếu ngừoi dùng đã đăng nhập
-          ElevatedButton( // Just for testing
+        children: [
+          // TODO: hiển thị nút đăng nhập và đăng ký nếu người dùng chưa đăng nhập và nut trang cá nhân nếu ngừoi dùng đã đăng nhập
+          ElevatedButton(
+            // Just for testing
             onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage())); // Đến login screen
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const LoginPage())); // Đến login screen
             },
             style: ElevatedButton.styleFrom(
               shape: const CircleBorder(),
@@ -105,6 +153,4 @@ class HomePageState extends State<HomePage> {
       ),
     );
   }
-
-
 }
