@@ -18,15 +18,17 @@ import java.util.Set;
 public class Bill {
     @Id
     private String id;
-    private LocalDateTime createDate;
-    @Enumerated(EnumType.STRING)
+    private String createDate;
+    @Enumerated
     private Status status;
     @ManyToMany
     private Set<Discount> discounts = new HashSet<>();
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "bill", cascade = CascadeType.ALL, orphanRemoval = true)
+    private String cus_phone;
+    private String cus_address;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true,targetEntity = BillDetail.class)
     private List<BillDetail> details = new ArrayList<>();
     @ManyToMany(mappedBy = "bills", cascade = CascadeType.ALL)
     private List<DeliverMan> deliverMen = new ArrayList<>();
