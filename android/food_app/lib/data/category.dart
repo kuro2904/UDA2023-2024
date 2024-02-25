@@ -1,5 +1,8 @@
-class Category{
+class Category {
   final String name;
   final String imageUrl;
-  Category(this.name,this.imageUrl);
+  Category({
+    required this.name,
+    required this.imageUrl,
+  });
 }
