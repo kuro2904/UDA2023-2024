@@ -30,4 +30,13 @@ public class AuthController {
     public ResponseEntity<UserDTO> register(@RequestBody RegisterDTO dto){
         return new ResponseEntity<>(authService.register(dto), HttpStatus.CREATED);
     }
+
+    @PostMapping("admin/register")
+    public ResponseEntity<UserDTO> registerAdmin(@RequestBody RegisterDTO dto){
+        return new ResponseEntity<>(authService.registerAdmin(dto),HttpStatus.CREATED);
+    }
+    @PostMapping("super-user/register")
+    public ResponseEntity<UserDTO> registerSuperUser(@RequestBody RegisterDTO dto){
+        return new ResponseEntity<>(authService.createSuperUser(dto),HttpStatus.CREATED);
+    }
 }

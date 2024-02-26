@@ -51,7 +51,6 @@ public class AthServiceImpl implements AuthService {
 
     @Override
     public UserDTO register(RegisterDTO dto) {
-
         if(userRepository.existsByEmail(dto.getEmail())) throw new FoodAppAPIException(HttpStatus.BAD_REQUEST, "Email is already exists");
         if(userRepository.existsByPhoneNumber(dto.getPhoneNumber())) throw new FoodAppAPIException(HttpStatus.BAD_REQUEST, "Phone is already exists");
         String randomID = UUID.randomUUID().toString().substring(0,30);
@@ -65,6 +64,44 @@ public class AthServiceImpl implements AuthService {
         Role user_role = roleRepository.findByName("ROLE_CUSTOMER").orElseThrow(
                 () -> new ResourceNotFoundException("Role","Name","ROLE_CUSTOMER")
         );
+        roles.add(user_role);
+        user.setRoles(roles);
+        return mapper.map(userRepository.save(user), UserDTO.class);
+    }
+
+    @Override
+    public UserDTO registerAdmin(RegisterDTO dto) {
+        if(userRepository.existsByEmail(dto.getEmail())) throw new FoodAppAPIException(HttpStatus.BAD_REQUEST, "Email is already exists");
+        if(userRepository.existsByPhoneNumber(dto.getPhoneNumber())) throw new FoodAppAPIException(HttpStatus.BAD_REQUEST, "Phone is already exists");
+        String randomID = UUID.randomUUID().toString().substring(0,30);
+        User user = new User();
+        user.setId(randomID);
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setAddress(dto.getAddress());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        Set<Role> roles = new HashSet<>();
+        Role user_role = roleRepository.findByName("ROLE_ADMIN").orElseThrow(
+                () -> new ResourceNotFoundException("Role","Name","ROLE_ADMIN")
+        );
+        roles.add(user_role);
+        user.setRoles(roles);
+        return mapper.map(userRepository.save(user), UserDTO.class);
+    }
+
+    @Override
+    public UserDTO createSuperUser(RegisterDTO dto) {
+        if(userRepository.existsByEmail(dto.getEmail())) throw new FoodAppAPIException(HttpStatus.BAD_REQUEST, "Email is already exists");
+        if(userRepository.existsByPhoneNumber(dto.getPhoneNumber())) throw new FoodAppAPIException(HttpStatus.BAD_REQUEST, "Phone is already exists");
+        String randomID = UUID.randomUUID().toString().substring(0,30);
+        User user = new User();
+        user.setId(randomID);
+        user.setEmail(dto.getEmail());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        user.setAddress(dto.getAddress());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        Set<Role> roles = new HashSet<>();
+        Role user_role = roleRepository.save(new Role("ROLE_OWNER","ROLE_OWNER"));
         roles.add(user_role);
         user.setRoles(roles);
         return mapper.map(userRepository.save(user), UserDTO.class);
