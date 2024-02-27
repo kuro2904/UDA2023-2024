@@ -104,7 +104,7 @@ class ExpandableFabState extends State<ExpandableFab> {
     double width = 8,
     double height = 8,
   }) {
-    final space = Container(width: width, height: height,);
+    final space = SizedBox(width: width, height: height,);
     return children.expand((element) => [element, space]).toList();
   }
 }

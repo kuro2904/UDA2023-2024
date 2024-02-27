@@ -5,8 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.time.format.DateTimeFormatter;
-
 @SpringBootApplication
 public class FoodAppApplication {
 
@@ -18,5 +16,8 @@ public class FoodAppApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(FoodAppApplication.class, args);
 	}
+
+
+
 
 }

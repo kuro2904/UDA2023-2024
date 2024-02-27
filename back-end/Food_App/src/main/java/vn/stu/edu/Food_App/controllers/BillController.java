@@ -9,6 +9,7 @@ import vn.stu.edu.Food_App.sevices.BillService;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/orders")
 public class BillController {
 
