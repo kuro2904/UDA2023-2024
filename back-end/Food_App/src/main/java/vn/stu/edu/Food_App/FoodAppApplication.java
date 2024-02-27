@@ -17,4 +17,7 @@ public class FoodAppApplication {
 		SpringApplication.run(FoodAppApplication.class, args);
 	}
 
+
+
+
 }

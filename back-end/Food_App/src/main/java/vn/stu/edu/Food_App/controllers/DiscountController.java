@@ -9,6 +9,7 @@ import vn.stu.edu.Food_App.sevices.DiscountService;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/discounts")
 public class DiscountController {
     private final DiscountService service;
