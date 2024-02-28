@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:food_app/screens/android/home.dart';
+
+
+>>>>>>> Stashed changes
 
 void main() {
   runApp(const MyApp());
