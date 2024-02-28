@@ -28,7 +28,7 @@ public class ImageServiceImpl implements ImageService {
             f.mkdir();
         }
         Files.copy(file.getInputStream(), Paths.get(fileName));
-        return fullPath;
+        return fileName;
     }
 
     @Override
