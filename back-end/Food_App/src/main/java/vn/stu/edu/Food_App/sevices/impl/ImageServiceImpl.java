@@ -27,12 +27,13 @@ public class ImageServiceImpl implements ImageService {
         if(!f.exists()){
             f.mkdir();
         }
-        Files.copy(file.getInputStream(), Paths.get(fullPath));
+        Files.copy(file.getInputStream(), Paths.get(fileName));
         return fullPath;
     }
 
     @Override
-    public InputStream getResource(String filePath) throws FileNotFoundException {
-        return new FileInputStream(filePath);
+    public InputStream getResource(String fileName) throws FileNotFoundException {
+        InputStream is = new FileInputStream(path+fileName);
+        return is;
     }
 }
