@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/screens/admin/product_management/product_management_page.dart';
+import 'package:food_app/screens/admin/dashboard_page.dart';
+
 
 void main() => runApp(const MyAdmin());
 
@@ -12,7 +13,7 @@ class MyAdmin extends StatelessWidget{
    return MaterialApp(
      debugShowCheckedModeBanner: false,
      theme: ThemeData(),
-     home: ProductPage(),
+     home:const DashboardPage(),
    );
   }
 

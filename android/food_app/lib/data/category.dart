@@ -22,7 +22,7 @@ class Category {
       } =>
         Category(
             id: id, name: name, description: description, imageUrl: imageUrl),
-      _ => throw FormatException('Failed to load Category')
+      _ => throw const FormatException('Failed to load Category')
     };
   }
 }

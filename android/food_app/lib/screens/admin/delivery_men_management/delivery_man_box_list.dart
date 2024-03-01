@@ -1,27 +1,27 @@
 
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/data/delivery_man.dart';
 
 import 'package:http/http.dart' as http;
 import '../../../constants/backend_config.dart';
-import '../../../data/category.dart';
-import 'add_update_category.dart';
+
+import 'add_update_delivery_man.dart';
 
 
-class CategoryBoxList extends StatefulWidget {
-  final List<Category> items;
+class DeliveryMenBoxList extends StatefulWidget {
+  final List<DeliveryMan> items;
 
-  const CategoryBoxList(this.items, {super.key});
+  const DeliveryMenBoxList(this.items, {super.key});
 
   @override
   State<StatefulWidget> createState() => CategoryBoxState();
 }
 
-class CategoryBoxState extends State<CategoryBoxList> {
+class CategoryBoxState extends State<DeliveryMenBoxList> {
 
 
-  Future<void> deleteCategory(Category item) async {
+  Future<void> deleteCategory(DeliveryMan item) async {
     final context = this.context;
 
     final response = await http.delete(Uri.parse(BackEndConfig.deleteCategoryString + item.id));
@@ -32,7 +32,7 @@ class CategoryBoxState extends State<CategoryBoxList> {
     } else {
 
       showDialog(
-        context: context,
+        context: context, // Use the stored context
         builder: (context) => AlertDialog(
           title: const Text('Error'),
           content: const Text('Failed to delete category. Please try again later.'),
@@ -63,18 +63,12 @@ class CategoryBoxState extends State<CategoryBoxList> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.network(
-                  BackEndConfig.fetchImageString + widget.items[index].imageUrl,
-                  fit: BoxFit.cover,
-                  width: 150,
-                  height: 150,
-                ),
                 Text(
-                  widget.items[index].name,
+                  widget.items[index].id,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(
-                  widget.items[index].description,
+                  widget.items[index].name,
                   style: const TextStyle(fontWeight: FontWeight.w400),
                 ),
                 PopupMenuButton<int>(
@@ -96,12 +90,11 @@ class CategoryBoxState extends State<CategoryBoxList> {
                     final item = widget.items[index];
                     try {
                       if (value == 3) {
-                        await deleteCategory(item);
                       } else if (value == 2) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  AddOrUpdateCategoryPage(category: item),
+                            builder: (context) =>  AddOrUpdateDeliveryManPage(deliveryMan: item),
                           ),
                         );
                       }

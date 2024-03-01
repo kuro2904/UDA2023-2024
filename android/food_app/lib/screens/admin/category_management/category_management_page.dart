@@ -53,7 +53,7 @@ class CategoryManagementState extends State<CategoryPage> {
                   padding: const EdgeInsets.only(right: 20),
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddOrUpdateCategorytPage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddOrUpdateCategoryPage()));
                     },
                     style: ButtonStyle(
                         backgroundColor:

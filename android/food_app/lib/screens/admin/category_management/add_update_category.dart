@@ -6,19 +6,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 
+
 import '../../../data/category.dart';
 
-class AddOrUpdateCategorytPage extends StatefulWidget {
+class AddOrUpdateCategoryPage extends StatefulWidget {
   final Category? category;
 
-  const AddOrUpdateCategorytPage({super.key, this.category});
+  const AddOrUpdateCategoryPage({super.key, this.category});
 
   @override
-  State<StatefulWidget> createState() => AddOrUpdateCategorytState();
+  State<StatefulWidget> createState() => AddOrUpdateDiscountState();
 }
 
 
-class AddOrUpdateCategorytState extends State<AddOrUpdateCategorytPage> {
+class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
   TextEditingController categoryId = TextEditingController();
   TextEditingController categoryName = TextEditingController();
   TextEditingController categoryDescription = TextEditingController();
