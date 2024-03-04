@@ -9,6 +9,7 @@ import vn.stu.edu.Food_App.sevices.DeliverManService;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/deliverymen")
 public class DeliveryManController {
     private final DeliverManService service;

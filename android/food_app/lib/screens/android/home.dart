@@ -155,6 +155,21 @@ class HomePageState extends State<HomePage> {
                     return CategoryMenu(children: list);
                   }
                 },
+              child: CategoryMenu(
+                children: [ // TODO: danh sách category ở đây
+                  // CategoryItem(
+                  //   category: Category(
+                  //     name: "test 1",
+                  //     imageUrl: "https://as2.ftcdn.net/v2/jpg/00/90/40/41/1000_F_90404161_XTapeqhGy6B9VWK8x24Dwq53UaNQgar3.jpg",
+                  //   ),
+                  // ),
+                  // CategoryItem(
+                  //   category: Category(
+                  //       name: "Test 2",
+                  //       imageUrl: "https://as1.ftcdn.net/v2/jpg/01/80/31/64/1000_F_180316434_mY7TCf3Yp1MqMCJ0fOITXYLpATSHPQI1.jpg"
+                  //   ),
+                  // ),
+                ],
               ),
             ),
             // Container(

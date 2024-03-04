@@ -10,6 +10,7 @@ import vn.stu.edu.Food_App.sevices.RoleService;
 import java.util.Set;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/roles")
 public class RoleController {
 
