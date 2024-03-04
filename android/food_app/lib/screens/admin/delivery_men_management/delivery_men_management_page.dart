@@ -95,7 +95,7 @@ List<DeliveryMan> parseDeliveryMan(String responseBody){
 }
 
 Future<List<DeliveryMan>> fetchAllDeliveryMen() async{
-  final response = await http.get(Uri.parse(BackEndConfig.fetchAllDeliveryMen));
+  final response = await http.get(Uri.parse(BackEndConfig.fetchAllDeliveryMenString));
   if(response.statusCode == 200){
     return parseDeliveryMan(response.body);
   }

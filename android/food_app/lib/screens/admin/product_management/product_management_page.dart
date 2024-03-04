@@ -73,7 +73,7 @@ class CategoryManagementState extends State<ProductPage> {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData && snapshot.data != null) {
-                  return ProductBoxList(snapshot.data ?? []);
+                  return Expanded(child: ProductBoxList(snapshot.data ?? []));
                 } else {
                   return const Center(child: Text('No data available'));
                 }

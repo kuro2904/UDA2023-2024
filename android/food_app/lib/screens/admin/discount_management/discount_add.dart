@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/discount.dart';
 import 'package:food_app/screens/admin/discount_management/discount_management_page.dart';
+import 'package:food_app/utils/authentication_generate_token.dart';
 import 'package:http/http.dart' as http;
 
 class AddDiscountPage extends StatefulWidget {
@@ -33,9 +37,24 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
     super.dispose();
   }
 
-  performInsert(String id, String discountPercent, String startDate,
-      String expiredDate) {
-
+  Future<void> performInsert(String id, int discountPercent, String startDate,
+      String expiredDate) async {
+    BasicAuthGenerateToken generateToken = BasicAuthGenerateToken("owner", "owner");
+    Map<String, String> header = {
+      'Authorization': generateToken.generateToken(),
+      'Content-Type':'application/json; charset=UTF-8'
+    };
+    Map<String,dynamic> body = {
+      'id': id,
+      'discount_percent': discountPercent,
+      'start_date': startDate,
+      'expire_date':expiredDate
+    };
+    Uri url = Uri.parse(BackEndConfig.insertDiscountString);
+    var response = await http.post(url,headers: header, body: jsonEncode(body));
+    if(response.statusCode == 201){
+      Navigator.push(context, MaterialPageRoute(builder: (context) => const DiscountPage()));
+    }
   }
 
   @override
@@ -91,7 +110,9 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: (){
+                          performInsert(discountId.text, int.parse(discountPercent.text),discountStartDate.text, discountExpiredDate.text);
+                          },
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all<Color>(Colors.blue)),

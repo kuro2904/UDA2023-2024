@@ -42,7 +42,6 @@ class DiscountBoxListState extends State<DiscountBoxList>{
                   widget.items[index].expiredDate,
                   style: const TextStyle(fontWeight: FontWeight.w400,fontSize: 20),
                 ),
-
               ],
             ),
           );

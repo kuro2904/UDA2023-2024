@@ -23,14 +23,12 @@ class CategoryBoxState extends State<CategoryBoxList> {
 
   Future<void> deleteCategory(Category item) async {
     final context = this.context;
-
     final response = await http.delete(Uri.parse(BackEndConfig.deleteCategoryString + item.id));
     if (response.statusCode == 200) {
       setState(() {
         widget.items.remove(item);
       });
     } else {
-
       showDialog(
         context: context,
         builder: (context) => AlertDialog(

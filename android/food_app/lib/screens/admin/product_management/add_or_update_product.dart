@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/data/product.dart';
+import 'package:food_app/utils/authentication_generate_token.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:image_picker/image_picker.dart';
 import '../../../constants/backend_config.dart';
 import '../../../data/category.dart';
 
@@ -24,9 +24,11 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   TextEditingController productName = TextEditingController();
   TextEditingController productDescription = TextEditingController();
   TextEditingController productPrice = TextEditingController();
-  File? _pickedImage;
   late Future<List<Category>> futureCategory;
   late Category chosenCategory;
+  Uint8List webImage = Uint8List(8);
+  File? _pickedImage;
+  var updateMode = false;
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       productName.text = widget.product!.name.toString();
       productDescription.text = widget.product!.description.toString();
       productPrice.text = widget.product!.description.toString();
+      updateMode = true;
     }
     futureCategory = fetchAllCategories();
     super.initState();
@@ -49,28 +52,36 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
     super.dispose();
   }
 
-  Future<void> _pickImageWeb() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-    );
 
-    if (result != null && result.files.isNotEmpty) {
-      File file = File(result.files.first.path!);
-      setState(() {
-        _pickedImage = file;
-      });
-    }
+  Future<void> performInsert(String id, String name, String price, String description) async {
+    BasicAuthGenerateToken generateToken = BasicAuthGenerateToken("owner", "owner");
+    Uri url = Uri.parse(BackEndConfig.insertProductString);
+    Map<String,String> header = {
+      'Authorization': generateToken.generateToken(),
+      'Content-Type': 'application/form-data'
+    };
   }
 
-  performInsert(String id, String name, String price, String description) {}
+  Future<void> _pickImage() async{
+    final ImagePicker _picker = ImagePicker();
+    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if(image != null){
+      var f = await image.readAsBytes();
+      setState(() {
+        webImage = f;
+        _pickedImage = File('a');
+      });
+    }else{
+      print('No image selected');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.product != null ? 'Update Product' : 'Add Product',
+          updateMode? 'Update Product' : 'Add Product',
           style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -165,18 +176,32 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                             );
                           }
                         }),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TextButton(
-                        onPressed: _pickImageWeb,
-                        style: ButtonStyle(
-                            backgroundColor:
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: TextButton(
+                            onPressed: (){
+                              _pickImage();
+                            },
+                            style: ButtonStyle(
+                                backgroundColor:
                                 MaterialStateProperty.all<Color>(Colors.blue)),
-                        child: const Text(
-                          'Choose Image',
-                          style: TextStyle(color: Colors.white),
+                            child: const Text(
+                              'Choose Image',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                         ),
-                      ),
+                        Container(
+                          width: 150,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            border: Border.all(),
+                          ),
+                          child: _pickedImage != null ? Image.memory(webImage, fit: BoxFit.fill,) : const Center(child:Text('No Image selected')),
+                        )
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
@@ -186,7 +211,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                             backgroundColor:
                                 MaterialStateProperty.all<Color>(Colors.blue)),
                         child: Text(
-                          widget.product != null ? 'Update' : 'Add',
+                          updateMode ? 'Update' : 'Add',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),

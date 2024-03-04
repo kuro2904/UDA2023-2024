@@ -2,10 +2,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/data/delivery_man.dart';
-
+import 'package:food_app/utils/authentication_generate_token.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants/backend_config.dart';
-
 import 'add_update_delivery_man.dart';
 
 
@@ -20,17 +19,18 @@ class DeliveryMenBoxList extends StatefulWidget {
 
 class CategoryBoxState extends State<DeliveryMenBoxList> {
 
-
-  Future<void> deleteCategory(DeliveryMan item) async {
-    final context = this.context;
-
-    final response = await http.delete(Uri.parse(BackEndConfig.deleteCategoryString + item.id));
+  Future<void> deleteDeliveryMan(DeliveryMan item) async {
+    BasicAuthGenerateToken token = BasicAuthGenerateToken("owner", "owner");
+    Map<String,String> header = {
+      'Content-Type':'application/json; charset=UTF-8',
+      'Authorization': token.generateToken()
+    };
+    final response = await http.delete(Uri.parse(BackEndConfig.deleteDeliveryManString + item.id),headers: header);
     if (response.statusCode == 200) {
       setState(() {
         widget.items.remove(item);
       });
     } else {
-
       showDialog(
         context: context, // Use the stored context
         builder: (context) => AlertDialog(
@@ -90,6 +90,7 @@ class CategoryBoxState extends State<DeliveryMenBoxList> {
                     final item = widget.items[index];
                     try {
                       if (value == 3) {
+                        deleteDeliveryMan(item); // Call the function directly
                       } else if (value == 2) {
                         Navigator.push(
                           context,
@@ -117,7 +118,6 @@ class CategoryBoxState extends State<DeliveryMenBoxList> {
                   },
                   child: const Icon(Icons.more_horiz),
                 ),
-
               ],
             ),
           );
