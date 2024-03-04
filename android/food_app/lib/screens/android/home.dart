@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/data/category.dart';
-import 'package:food_app/screens/home_components/category_menu.dart';
-import 'package:food_app/screens/home_components/expandable_FloatingActionButton.dart';
-import 'package:food_app/screens/login.dart';
 
 import 'home_components/category_item.dart';
+import 'home_components/category_menu.dart';
+import 'home_components/expandable_FloatingActionButton.dart';
+import 'login.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -128,18 +128,18 @@ class HomePageState extends State<HomePage> {
             Center(
               child: CategoryMenu(
                 children: [ // TODO: danh sách category ở đây
-                  CategoryItem(
-                    category: Category(
-                      name: "test 1",
-                      imageUrl: "https://as2.ftcdn.net/v2/jpg/00/90/40/41/1000_F_90404161_XTapeqhGy6B9VWK8x24Dwq53UaNQgar3.jpg",
-                    ),
-                  ),
-                  CategoryItem(
-                    category: Category(
-                        name: "Test 2",
-                        imageUrl: "https://as1.ftcdn.net/v2/jpg/01/80/31/64/1000_F_180316434_mY7TCf3Yp1MqMCJ0fOITXYLpATSHPQI1.jpg"
-                    ),
-                  ),
+                  // CategoryItem(
+                  //   category: Category(
+                  //     name: "test 1",
+                  //     imageUrl: "https://as2.ftcdn.net/v2/jpg/00/90/40/41/1000_F_90404161_XTapeqhGy6B9VWK8x24Dwq53UaNQgar3.jpg",
+                  //   ),
+                  // ),
+                  // CategoryItem(
+                  //   category: Category(
+                  //       name: "Test 2",
+                  //       imageUrl: "https://as1.ftcdn.net/v2/jpg/01/80/31/64/1000_F_180316434_mY7TCf3Yp1MqMCJ0fOITXYLpATSHPQI1.jpg"
+                  //   ),
+                  // ),
                 ],
               ),
             ),
