@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:food_app/Utils/dialog.dart';
-import 'package:food_app/Utils/network.dart';
+import 'package:food_app/utils/network.dart';
 import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/category.dart';
 
 class ClientState { // Singleton
   static final ClientState _instance = ClientState._internal();
@@ -12,6 +12,7 @@ class ClientState { // Singleton
   String serverMessage = "";
   String userName = "";
   String userPassword = "";
+  String token = "";
 
   Map<String, String> header = {};
 
@@ -70,11 +71,12 @@ class ClientState { // Singleton
     return false;
   }
 
-  Future<List<Map<String, String>>> getAllCategories() async {
-    final response = await getRequest("${BackEndConfig.serverAddr}/api/categories");
+  Future<List<Category>> getAllCategories() async {
+    final response = await getRequest(BackEndConfig.fetchAllCategoryString);
     serverMessage = response.body;
     if (response.statusCode == 200) {
-      return json.decode(serverMessage).cast<Map<String, String>>();
+      final parser = json.decode(serverMessage).cast<Map<String, dynamic>>();
+      return parser.map<Category>((json) => Category.fromJson(json)).toList();
     }
     return [];
   }

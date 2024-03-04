@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/Utils/dialog.dart';
+import 'package:food_app/utils/dialog.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/login.dart';
 
