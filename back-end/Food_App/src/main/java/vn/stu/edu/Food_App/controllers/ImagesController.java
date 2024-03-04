@@ -9,6 +9,7 @@ import java.io.IOException;
 import vn.stu.edu.Food_App.sevices.ImageService;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/images")
 public class ImagesController {
     private final ImageService service;
