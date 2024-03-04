@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/Utils/dialog.dart';
+import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/category.dart';
+import 'package:food_app/data/client_state.dart';
+import 'package:food_app/screens/android/signup.dart';
 
 import 'home_components/category_item.dart';
 import 'home_components/category_menu.dart';
@@ -18,7 +22,6 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
   int _selectedIndex = 0;
-
 
   void _onItemTapped(int index) {
     setState(() {
@@ -70,7 +73,7 @@ class HomePageState extends State<HomePage> {
             ListTile(
               title: const Text('Log out'),
               selected: _selectedIndex == 3,
-              onTap: (){
+              onTap: () {
                 _onItemTapped(3);
                 Navigator.pop(context);
               },
@@ -126,21 +129,32 @@ class HomePageState extends State<HomePage> {
                           fontWeight: FontWeight.bold)),
                 )),
             Center(
-              child: CategoryMenu(
-                children: [ // TODO: danh sách category ở đây
-                  CategoryItem(
-                    category: Category(
-                      name: "test 1",
-                      imageUrl: "https://as2.ftcdn.net/v2/jpg/00/90/40/41/1000_F_90404161_XTapeqhGy6B9VWK8x24Dwq53UaNQgar3.jpg",
-                    ),
-                  ),
-                  CategoryItem(
-                    category: Category(
-                        name: "Test 2",
-                        imageUrl: "https://as1.ftcdn.net/v2/jpg/01/80/31/64/1000_F_180316434_mY7TCf3Yp1MqMCJ0fOITXYLpATSHPQI1.jpg"
-                    ),
-                  ),
-                ],
+              child: FutureBuilder<List<Map<String, String>>>(
+                future: ClientState().getAllCategories(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData == false){
+                    return const Text('Error: Data is null');
+                  } else {
+                    List<Widget> list = [];
+                    List<Map<String, String>> data = snapshot.data!;
+                    for (var i in data) {
+                      String name = i['name'].toString();
+                      String imageUrl = i['imageUrl'].toString();
+                      CategoryItem item = CategoryItem(
+                        category: Category(
+                          name: name,
+                          imageUrl: "${BackEndConfig.serverAddr}/api/images/name/$imageUrl",
+                        ),
+                      );
+                      list.add(item);
+                    }
+                    return CategoryMenu(children: list);
+                  }
+                },
               ),
             ),
             // Container(
@@ -152,7 +166,7 @@ class HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      floatingActionButton: ExpandableFab(
+      floatingActionButton: ClientState().isLogin ? null : ExpandableFab(
         initialOpen: false,
         distance: 10,
         icon: const Icon(Icons.menu),
@@ -160,17 +174,41 @@ class HomePageState extends State<HomePage> {
           // TODO: hiển thị nút đăng nhập và đăng ký nếu người dùng chưa đăng nhập và nut trang cá nhân nếu ngừoi dùng đã đăng nhập
           ElevatedButton(
             // Just for testing
-            onPressed: () {
-              Navigator.push(
+            onPressed: () async {
+              await Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          const LoginPage())); // Đến login screen
+                      builder: (context) => const LoginPage()
+                  )
+              ); // Đến login screen
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const HomePage())
+              );
             },
             style: ElevatedButton.styleFrom(
               shape: const CircleBorder(),
             ),
             child: const Icon(Icons.login),
+          ),
+          ElevatedButton(
+            // Just for testing
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignUpPage()
+                  )
+              );
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage())
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+            ),
+            child: const Icon(Icons.app_registration),
           ),
         ],
       ),

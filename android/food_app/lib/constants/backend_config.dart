@@ -1,3 +1,3 @@
 class BackEndConfig {
-  final String serverAddr = "192.168.43.1:8081";
+  static const String serverAddr = "http://192.168.1.3:8081";
 }
