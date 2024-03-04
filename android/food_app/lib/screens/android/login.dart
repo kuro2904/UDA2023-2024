@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/utils/dialog.dart';
+import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/client_state.dart';
+import 'package:food_app/screens/android/signup.dart';
 import 'package:food_app/theme/theme.dart';
 import 'package:icons_plus/icons_plus.dart';
 
@@ -33,10 +37,12 @@ class LoginPageState extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool rememberMe = false;
+  bool loginPressed = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         padding: const EdgeInsets.all(40),
         child: Column(
@@ -118,9 +124,27 @@ class LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: login,
+              onPressed: loginPressed ? null : login,
+              child: Text(
+                loginPressed ? "Logging in" : "Login",
+                style: const TextStyle(
+                    fontSize: 18
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: loginPressed ? null : () async {
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SignUpPage()
+                    )
+                );
+                if (ClientState().isLogin) Navigator.pop(context);
+              },
               child: const Text(
-                "Login",
+                "Sign up",
                 style: TextStyle(
                     fontSize: 18
                 ),
@@ -154,7 +178,7 @@ class LoginPageState extends State<LoginPage> {
             const Spacer(), // Spacing
             Center(
               child: ElevatedButton( // Nút quay lại
-                onPressed: () {
+                onPressed: loginPressed ? null : () {
                   Navigator.pop(context); // Quay lại screen trước đó
                 },
                 style: ElevatedButton.styleFrom(
@@ -173,8 +197,30 @@ class LoginPageState extends State<LoginPage> {
     // TODO: google login
   }
 
-  login() {
-    // TODO: Login logic
+  login() async {
+    if (ClientState().isLogin) return;
+
+    if (nameController.text.isEmpty ||
+        passwordController.text.isEmpty) {
+      showAlertDialog(context, "User name and password cannot be empty", "Login failed");
+      return;
+    }
+
+    setState(() {
+      loginPressed = true;
+    });
+
+    final login = await ClientState().login(nameController.text, passwordController.text);
+
+    if (login == false) {
+      setState(() {
+        loginPressed = false;
+      });
+      showAlertDialog(context, ClientState().serverMessage, "Login failed");
+    }
+    else {
+      Navigator.pop(context);
+    }
   }
 
   passwordForgot() {

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:food_app/screens/admin/main_page.dart';
 import 'package:food_app/screens/android/home.dart';
 
@@ -12,6 +13,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown
+    ]);
     return MaterialApp(
       home: _getHome(),
       routes: _getRoutes(),

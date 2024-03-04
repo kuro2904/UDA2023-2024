@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/constants/backend_config.dart';
 
 import '../../../../data/category.dart';
 
@@ -33,7 +34,7 @@ class CategoryItem extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.network(
-              category.imageUrl,
+              "${BackEndConfig.fetchImageString}${category.imageUrl}",
               width: width * 0.7,
               height: height * 0.7,
             ),

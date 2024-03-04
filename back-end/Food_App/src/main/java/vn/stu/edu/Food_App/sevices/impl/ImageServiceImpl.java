@@ -27,7 +27,7 @@ public class ImageServiceImpl implements ImageService {
         if(!f.exists()){
             f.mkdir();
         }
-        Files.copy(file.getInputStream(), Paths.get(fileName));
+        Files.copy(file.getInputStream(), Paths.get(fullPath));
         return fileName;
     }
 
