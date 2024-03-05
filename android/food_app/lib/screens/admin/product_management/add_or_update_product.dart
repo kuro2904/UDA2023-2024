@@ -3,12 +3,14 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:food_app/data/product.dart';
-import 'package:food_app/utils/authentication_generate_token.dart';
+import 'package:food_app/screens/admin/product_management/product_management_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import '../../../constants/backend_config.dart';
 import '../../../data/category.dart';
+import '../../../data/client_state.dart';
 
 class AddOrUpdateProductPage extends StatefulWidget {
   final Product? product;
@@ -24,6 +26,8 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   TextEditingController productName = TextEditingController();
   TextEditingController productDescription = TextEditingController();
   TextEditingController productPrice = TextEditingController();
+  final _onlyNumbersFormatter = FilteringTextInputFormatter.digitsOnly;
+
   late Future<List<Category>> futureCategory;
   late Category chosenCategory;
   Uint8List webImage = Uint8List(8);
@@ -53,18 +57,74 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   }
 
 
-  Future<void> performInsert(String id, String name, String price, String description) async {
-    BasicAuthGenerateToken generateToken = BasicAuthGenerateToken("owner", "owner");
+  Future<void> performInsert(String id, String name, String price, String description, Category category,Uint8List image) async {
     Uri url = Uri.parse(BackEndConfig.insertProductString);
     Map<String,String> header = {
-      'Authorization': generateToken.generateToken(),
-      'Content-Type': 'application/form-data'
+      'Authorization': ClientState().token,
+      'Content-Type': 'multipart/form-data;'
     };
+    Map<String, String> body = {
+      'id': id,
+      'name': name,
+      'price': '${price}k VND',
+      'description':description,
+      'categoryId': category.id
+    };
+    var request = http.MultipartRequest('POST',url);
+    try {
+      if (image.isNotEmpty) {
+        List<int> data = webImage.cast();
+        request.files.add(http.MultipartFile.fromBytes('image', data,filename: 'asd.jpg'));
+      }
+      request.headers.addAll(header);
+      request.fields['request'] = jsonEncode(body).toString();
+      var response = await request.send();
+      if (response.statusCode == 201) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ProductPage()));
+      }else{
+        print('Insertion failed with status code: ${response.statusCode}}');
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> performUpdate(String id, String name, String price, String description, Category category,Uint8List image) async {
+    Uri url = Uri.parse(BackEndConfig.updateProductString+id);
+    Map<String,String> header = {
+      'Authorization': ClientState().token,
+      'Content-Type': 'multipart/form-data;'
+    };
+    Map<String, String> body = {
+      'name': name,
+      'price': '${price}k VND',
+      'description':description,
+      'categoryId': category.id
+    };
+    var request = http.MultipartRequest('PUT',url);
+    try {
+      if (image.isNotEmpty) {
+        List<int> data = webImage.cast();
+        request.files.add(http.MultipartFile.fromBytes('image', data,filename: 'asd.jpg'));
+      }
+      request.headers.addAll(header);
+      request.fields['request'] = jsonEncode(body).toString();
+      var response = await request.send();
+      if (response.statusCode == 201) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const ProductPage()));
+      }else{
+        print('Insertion failed with status code: ${response.statusCode}}');
+      }
+    } on Exception catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _pickImage() async{
-    final ImagePicker _picker = ImagePicker();
-    XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if(image != null){
       var f = await image.readAsBytes();
       setState(() {
@@ -99,6 +159,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
                               hintText: 'Product Id'),
+                          enabled: updateMode? false : true,
                           controller: productId,
                         )),
                     Padding(
@@ -124,6 +185,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                             border: OutlineInputBorder(),
                             hintText: 'Product Price',
                           ),
+                          inputFormatters: [_onlyNumbersFormatter],
                           controller: productPrice,
                         )),
                     const Padding(
@@ -145,7 +207,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                             return Text('Error: ${snapshot.error}');
                           } else if (snapshot.hasData &&
                               snapshot.data != null) {
-                            chosenCategory = snapshot.data!.first;
+                              chosenCategory = snapshot.data!.first;
                             return Padding(
                               padding: const EdgeInsets.all(10),
                               child: SizedBox(
@@ -206,7 +268,9 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          updateMode? performUpdate(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage) :performInsert(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage);
+                        },
                         style: ButtonStyle(
                             backgroundColor:
                                 MaterialStateProperty.all<Color>(Colors.blue)),

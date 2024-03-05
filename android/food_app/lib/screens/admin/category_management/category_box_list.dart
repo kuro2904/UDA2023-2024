@@ -61,11 +61,13 @@ class CategoryBoxState extends State<CategoryBoxList> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Image.network(
-                  BackEndConfig.fetchImageString + widget.items[index].imageUrl,
-                  fit: BoxFit.cover,
-                  width: 150,
-                  height: 150,
+                Container(
+                  child: widget.items[index].imageUrl.isNotEmpty ? Image.network(
+                    BackEndConfig.fetchImageString + widget.items[index].imageUrl,
+                    fit: BoxFit.cover,
+                    width: 150,
+                    height: 150,
+                  ) : const Text('No image'),
                 ),
                 Text(
                   widget.items[index].name,

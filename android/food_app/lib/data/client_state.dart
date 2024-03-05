@@ -15,14 +15,14 @@ class ClientState { // Singleton
   String token = "";
 
   Map<String, String> header = {};
-
+  Map<String, String> headerWithAuth = {};
   factory ClientState() {
     return _instance;
   }
 
   Future<bool> login(String username, String password) async {
     final response = await postJsonRequest(
-      "${BackEndConfig.serverAddr}/api/auth/login",
+      BackEndConfig.loginString,
       header,
       {
         "email": username,
@@ -37,6 +37,8 @@ class ClientState { // Singleton
       userName = username;
       userPassword = password;
       isLogin = true;
+      token = "Basic ${base64Encode(utf8.encode('$username:$password'))}";
+      updateHeaderWithAuth();
       return isLogin;
     }
     return false;
@@ -44,7 +46,7 @@ class ClientState { // Singleton
 
   Future<bool> signup(String name, String password, String phoneNumber, String address) async {
     final response = await postJsonRequest(
-      "${BackEndConfig.serverAddr}/api/auth/register",
+      BackEndConfig.signUpString,
       header,
       {
         "email": name,
@@ -81,8 +83,16 @@ class ClientState { // Singleton
     return [];
   }
 
+  void updateHeaderWithAuth() {
+    headerWithAuth = {
+      "Accept": "*/*",
+      "Content-Type": "application/json; charset=UTF-8",
+      "Authorization": token
+    };
+  }
+
   ClientState._internal() {
     header.addEntries({"Accept": "*/*"}.entries);
-    header.addEntries({"Content-Type": "application/json"}.entries);
+    header.addEntries({"Content-Type": "application/json; charset=UTF-8"}.entries);
   }
 }

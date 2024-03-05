@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Category {
   final String id;
   final String name;
@@ -25,4 +23,9 @@ class Category {
       _ => throw const FormatException('Failed to load Category')
     };
   }
+  Map<String,String> toJson() => {
+    'id':id,
+    'name':name,
+    'description':description
+  };
 }
