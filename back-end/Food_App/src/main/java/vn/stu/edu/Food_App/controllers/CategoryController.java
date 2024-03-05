@@ -24,7 +24,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> insert(@RequestParam String request, @RequestParam("image") MultipartFile image) throws IOException {
+    public ResponseEntity<CategoryDTO> insert(@RequestParam("request") String request,@RequestPart(required = false) @RequestParam("image") MultipartFile image) throws IOException {
         return new ResponseEntity<>(service.insert(mapper.readValue(request, CategoryDTO.class), image), HttpStatus.CREATED);
     }
 
