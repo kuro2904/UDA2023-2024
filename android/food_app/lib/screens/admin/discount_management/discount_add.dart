@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/discount.dart';
 import 'package:food_app/screens/admin/discount_management/discount_management_page.dart';
-import 'package:food_app/utils/authentication_generate_token.dart';
 import 'package:http/http.dart' as http;
 
 class AddDiscountPage extends StatefulWidget {
@@ -39,11 +39,6 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
 
   Future<void> performInsert(String id, int discountPercent, String startDate,
       String expiredDate) async {
-    BasicAuthGenerateToken generateToken = BasicAuthGenerateToken("owner", "owner");
-    Map<String, String> header = {
-      'Authorization': generateToken.generateToken(),
-      'Content-Type':'application/json; charset=UTF-8'
-    };
     Map<String,dynamic> body = {
       'id': id,
       'discount_percent': discountPercent,
@@ -51,7 +46,7 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
       'expire_date':expiredDate
     };
     Uri url = Uri.parse(BackEndConfig.insertDiscountString);
-    var response = await http.post(url,headers: header, body: jsonEncode(body));
+    var response = await http.post(url,headers: ClientState().headerWithAuth, body: jsonEncode(body));
     if(response.statusCode == 201){
       Navigator.push(context, MaterialPageRoute(builder: (context) => const DiscountPage()));
     }

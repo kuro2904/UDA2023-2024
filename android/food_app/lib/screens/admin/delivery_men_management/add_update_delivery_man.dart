@@ -1,14 +1,13 @@
 
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/delivery_man.dart';
 import 'package:food_app/screens/admin/delivery_men_management/delivery_men_management_page.dart';
 import 'package:http/http.dart' as http;
-import '../../../utils/authentication_generate_token.dart';
 
 
 class AddOrUpdateDeliveryManPage extends StatefulWidget {
@@ -44,32 +43,22 @@ class AddOrUpdateDeliveryManState extends State<AddOrUpdateDeliveryManPage> {
   }
 
   Future<void> performInsert(String id, String name) async {
-    BasicAuthGenerateToken generateToken = BasicAuthGenerateToken("owner", "owner");
-    Map<String, String> header = {
-      'Authorization': generateToken.generateToken(),
-      'Content-Type': 'application/json; charset=UTF-8'
-    };
     Map<String,String> body = {
       'id':id,
       'name':name
     };
     
-    var response = await http.post(Uri.parse(BackEndConfig.insertDeliveryManString),headers: header, body: jsonEncode(body));
+    var response = await http.post(Uri.parse(BackEndConfig.insertDeliveryManString),headers: ClientState().headerWithAuth, body: jsonEncode(body));
     if(response.statusCode == 201){
       Navigator.push(context, MaterialPageRoute(builder: (context) => const DeliveryMenPage()));
     }
     
   }
   Future<void>performUpdate(String name) async{
-    BasicAuthGenerateToken generateToken = BasicAuthGenerateToken("owner", "owner");
-    Map<String,String> header = {
-      'Authorization': generateToken.generateToken(),
-      'Content-Type': 'application/json; charset=UTF-8'
-    };
     Map<String, String> body = {
       'name': name
     };
-    var response = await http.put(Uri.parse(BackEndConfig.updateDeliveryManString+widget.deliveryMan!.id),headers: header,body: jsonEncode(body));
+    var response = await http.put(Uri.parse(BackEndConfig.updateDeliveryManString+widget.deliveryMan!.id),headers: ClientState().headerWithAuth,body: jsonEncode(body));
     if(response.statusCode == 200){
       Navigator.push(context, MaterialPageRoute(builder: (context) => const DeliveryMenPage()));
     }

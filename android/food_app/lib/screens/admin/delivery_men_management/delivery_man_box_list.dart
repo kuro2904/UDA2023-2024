@@ -1,8 +1,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/delivery_man.dart';
-import 'package:food_app/utils/authentication_generate_token.dart';
 import 'package:http/http.dart' as http;
 import '../../../constants/backend_config.dart';
 import 'add_update_delivery_man.dart';
@@ -20,12 +20,7 @@ class DeliveryMenBoxList extends StatefulWidget {
 class CategoryBoxState extends State<DeliveryMenBoxList> {
 
   Future<void> deleteDeliveryMan(DeliveryMan item) async {
-    BasicAuthGenerateToken token = BasicAuthGenerateToken("owner", "owner");
-    Map<String,String> header = {
-      'Content-Type':'application/json; charset=UTF-8',
-      'Authorization': token.generateToken()
-    };
-    final response = await http.delete(Uri.parse(BackEndConfig.deleteDeliveryManString + item.id),headers: header);
+    final response = await http.delete(Uri.parse(BackEndConfig.deleteDeliveryManString + item.id),headers: ClientState().headerWithAuth);
     if (response.statusCode == 200) {
       setState(() {
         widget.items.remove(item);
