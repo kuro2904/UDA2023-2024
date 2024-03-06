@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/admin/main_page.dart';
+import 'package:food_app/screens/admin/register_admin.dart';
 
 import '../../utils/dialog.dart';
 
@@ -63,6 +64,19 @@ class AdminLoginState extends State<AdminLogin>{
                   fixedSize: MaterialStateProperty.all<Size>(const Size.fromWidth(300))
                 ),
                  child: const Text('Login', style: TextStyle(color: Colors.white),),
+              ),
+            ),
+            const SizedBox(height: 20,),
+            Center(
+              child: TextButton(
+                onPressed: (){
+                 Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpAdminPage()));
+                },
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                    fixedSize: MaterialStateProperty.all<Size>(const Size.fromWidth(300))
+                ),
+                child: const Text('Sign Up', style: TextStyle(color: Colors.white),),
               ),
             )
           ],

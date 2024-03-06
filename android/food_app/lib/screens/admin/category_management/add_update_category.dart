@@ -51,17 +51,23 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    XFile? image = await picker.pickImage(source: ImageSource.gallery);
-      if (image != null) {
-        var f = await image.readAsBytes();
-        setState(() {
-          webImage = f;
-          _pickedImage = File('a');
-        });
-      } else {
-        print('No image selected');
-      }
+    if (updateMode) {
+      setState(() {
+        webImage = Uint8List(0);
+      });
     }
+    XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      var f = await image.readAsBytes();
+      setState(() {
+        webImage = f;
+        _pickedImage = File('a');
+      });
+    } else {
+      print('No image selected');
+    }
+  }
+
 
   Future<void> _insertData(
       String id, String name, String description, Uint8List image) async {
@@ -110,8 +116,8 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
     try {
       Uri url = Uri.parse(BackEndConfig.updateCategoryString+id);
       var request = http.MultipartRequest('PUT', url);
-      if (image.isNotEmpty) { // Check if image is not empty
-        List<int> data = image.cast(); // Cast image to list of integers
+      if (image.isNotEmpty) {
+        List<int> data = image.cast();
         request.files.add(http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
       }
       request.headers.addAll(header);
