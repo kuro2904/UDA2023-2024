@@ -1,6 +1,4 @@
 package vn.stu.edu.Food_App.controllers;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> insertProduct(@RequestParam String request, @RequestParam("image")MultipartFile image) throws IOException {
+    public ResponseEntity<ProductDTO> insertProduct(@RequestParam("request") String request, @RequestParam("image")MultipartFile image) throws IOException {
         return new ResponseEntity<>(productService.insertProduct(mapper.readValue(request, ProductDTO.class),image), HttpStatus.CREATED);
     }
 

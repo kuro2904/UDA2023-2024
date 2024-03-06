@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/admin/category_management/category_management_page.dart';
-import 'package:food_app/utils/authentication_generate_token.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../data/category.dart';
 import 'package:http/http.dart' as http;
@@ -51,6 +51,11 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
+    if (updateMode) {
+      setState(() {
+        webImage = Uint8List(0);
+      });
+    }
     XFile? image = await picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       var f = await image.readAsBytes();
@@ -63,44 +68,72 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
     }
   }
 
-  // Future<void> _insertData(
-  //     String id, String name, String description, File? image) async {
-  //   BasicAuthGenerateToken token = BasicAuthGenerateToken("owner", "owner");
-  //   Map<String, String> header = {
-  //     'Authorization': token.generateToken(),
-  //     'Content-Type': 'multipart/form-data; charset=UTF-8'
-  //   };
-  //   Map<String, String> body = {
-  //     'id': id,
-  //     'name': name,
-  //     'description': description
-  //   };
-  //   try {
-  //     Uri url = Uri.parse(BackEndConfig.insertCategoryString);
-  //     var request = http.MultipartRequest('POST', url);
-  //     if (image != null) {
-  //       var stream = http.ByteStream(image.openRead());
-  //       stream.cast();
-  //       var length = await image.length();
-  //       var multipart = http.MultipartFile('image', stream, length);
-  //       request.files.add(multipart);
-  //     }
-  //     request.headers.addAll(header);
-  //     request.fields['request'] = jsonEncode(body);
-  //     var response = await request.send();
-  //     if (response.statusCode == 201) {
-  //       print(response.toString());
-  //       Navigator.push(context,
-  //           MaterialPageRoute(builder: (context) => const CategoryPage()));
-  //     }else{
-  //       print('Insertion failed with status code: ${response.statusCode}');
-  //     }
-  //   } catch (e) {
-  //     throw Exception(e.toString());
-  //   }
-  // }
 
-  // performUpdate(String text, String text2) {}
+  Future<void> _insertData(
+      String id, String name, String description, Uint8List image) async {
+
+    Map<String, String> header = {
+      'Authorization': ClientState().token,
+      'Content-Type': 'multipart/form-data;'
+    };
+    Map<String, String> body = {
+      'id': id,
+      'name': name,
+      'description': description
+    };
+    try {
+      Uri url = Uri.parse(BackEndConfig.insertCategoryString);
+      var request = http.MultipartRequest('POST', url);
+      if (image.isNotEmpty) {
+        List<int> data = image.cast();
+        request.files.add(http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
+      }
+      request.headers.addAll(header);
+      request.fields['request'] = jsonEncode(body).toString();
+      var response = await request.send();
+      if (response.statusCode == 201) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const CategoryPage()));
+      } else {
+        print('Insertion failed with status code: ${response.statusCode}  ${response.stream.toString()}');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<void> _updateData(
+      String id, String name, String description, Uint8List image) async {
+
+    Map<String, String> header = {
+      'Authorization': ClientState().token,
+      'Content-Type': 'multipart/form-data;'
+    };
+    Map<String, String> body = {
+      'name': name,
+      'description': description
+    };
+    try {
+      Uri url = Uri.parse(BackEndConfig.updateCategoryString+id);
+      var request = http.MultipartRequest('PUT', url);
+      if (image.isNotEmpty) {
+        List<int> data = image.cast();
+        request.files.add(http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
+      }
+      request.headers.addAll(header);
+      request.fields['request'] = jsonEncode(body).toString();
+      var response = await request.send();
+      if (response.statusCode == 201) {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const CategoryPage()));
+      } else {
+        print('Insertion failed with status code: ${response.statusCode}  ${response.stream.toString()}');
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -183,11 +216,8 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                       padding: const EdgeInsets.all(10),
                       child: TextButton(
                         onPressed: () {
-                          // !updateMode
-                              // ? _insertData(categoryId.text, categoryName.text,
-                              // categoryDescription.text, _pickedImage)
-                              // : performUpdate(
-                              // categoryName.text, categoryDescription.text);
+                         updateMode? _updateData(widget.category!.id, categoryName.text,categoryDescription.text,webImage):
+                          _insertData(categoryId.text, categoryName.text, categoryDescription.text, webImage);
                         },
                         style: ButtonStyle(
                             backgroundColor:

@@ -8,21 +8,20 @@ class ClientState { // Singleton
   static final ClientState _instance = ClientState._internal();
 
   bool isLogin = false;
-  String userRole = "";
   String serverMessage = "";
   String userName = "";
   String userPassword = "";
   String token = "";
 
   Map<String, String> header = {};
-
+  Map<String, String> headerWithAuth = {};
   factory ClientState() {
     return _instance;
   }
 
   Future<bool> login(String username, String password) async {
     final response = await postJsonRequest(
-      "${BackEndConfig.serverAddr}/api/auth/login",
+      BackEndConfig.loginString,
       header,
       {
         "email": username,
@@ -37,14 +36,16 @@ class ClientState { // Singleton
       userName = username;
       userPassword = password;
       isLogin = true;
+      token = "Basic ${base64Encode(utf8.encode('$username:$password'))}";
       return isLogin;
     }
     return false;
   }
 
+
   Future<bool> signup(String name, String password, String phoneNumber, String address) async {
     final response = await postJsonRequest(
-      "${BackEndConfig.serverAddr}/api/auth/register",
+      BackEndConfig.signUpAdminString,
       header,
       {
         "email": name,
@@ -81,8 +82,10 @@ class ClientState { // Singleton
     return [];
   }
 
+
+
   ClientState._internal() {
     header.addEntries({"Accept": "*/*"}.entries);
-    header.addEntries({"Content-Type": "application/json"}.entries);
+    header.addEntries({"Content-Type": "application/json; charset=UTF-8"}.entries);
   }
 }
