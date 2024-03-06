@@ -31,8 +31,8 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   late Future<List<Category>> futureCategory;
   late Category chosenCategory;
   Uint8List webImage = Uint8List(8);
-  File? _pickedImage;
   var updateMode = false;
+  var edited = false;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       productId.text = widget.product!.id.toString();
       productName.text = widget.product!.name.toString();
       productDescription.text = widget.product!.description.toString();
-      productPrice.text = widget.product!.description.toString();
+      productPrice.text = widget.product!.price.toString();
       updateMode = true;
     }
     futureCategory = fetchAllCategories();
@@ -129,7 +129,6 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       var f = await image.readAsBytes();
       setState(() {
         webImage = f;
-        _pickedImage = File('a');
       });
     }else{
       print('No image selected');
@@ -147,144 +146,150 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
         centerTitle: true,
       ),
       body: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Expanded(
-                child: Column(
+              padding: const EdgeInsets.all(10),
+              child:  Column(
                   children: [
-                    Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Product Id'),
-                          enabled: updateMode? false : true,
-                          controller: productId,
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Product Name'),
-                          controller: productName,
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Product Description'),
-                          controller: productDescription,
-                        )),
-                    Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: 'Product Price',
-                          ),
-                          inputFormatters: [_onlyNumbersFormatter],
-                          controller: productPrice,
-                        )),
-                    const Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Text(
-                        'Category: ',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    FutureBuilder(
-                        future: futureCategory,
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData &&
-                              snapshot.data != null) {
-                              chosenCategory = snapshot.data!.first;
-                            return Padding(
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
                               padding: const EdgeInsets.all(10),
-                              child: SizedBox(
-                                height: 50,
-                                child: DropdownButton<Category>(
-                                  value: chosenCategory,
-                                  icon: const Icon(Icons.keyboard_arrow_down),
-                                  items: snapshot.data!.map((category) {
-                                    return DropdownMenuItem(value: category,child: Text(category.name),);
-                                  }).toList(),
-                                  style: const TextStyle(
-                                    color: Colors.black, // Text color
-                                    fontSize: 16, // Text size
-                                    fontWeight: FontWeight.bold, // Text weight
-                                  ),
-                                  dropdownColor: Colors.grey[200],
-                                  elevation: 8,
-                                  isExpanded: true,
-                                  onChanged: (Category? value) { setState(() {
-                                    chosenCategory = value!;
-                                  }); },
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Product Id'),
+                                enabled: updateMode? false : true,
+                                controller: productId,
+                              )),
+                          Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Product Name'),
+                                controller: productName,
+                              )),
+                          Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    hintText: 'Product Description'),
+                                controller: productDescription,
+                              )),
+                          Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: TextField(
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'Product Price',
                                 ),
-                              ),
-                            );
-                          } else {
-                            return const Center(
-                              child: Text('No data available'),
-                            );
-                          }
-                        }),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: TextButton(
-                            onPressed: (){
-                              _pickImage();
-                            },
-                            style: ButtonStyle(
-                                backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue)),
-                            child: const Text(
-                              'Choose Image',
-                              style: TextStyle(color: Colors.white),
+                                inputFormatters: [_onlyNumbersFormatter],
+                                controller: productPrice,
+                              )),
+                          const Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Text(
+                              'Category: ',
+                              style: TextStyle(fontSize: 20),
                             ),
                           ),
-                        ),
-                        Container(
-                          width: 150,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            border: Border.all(),
+                          FutureBuilder(
+                              future: futureCategory,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (snapshot.hasData &&
+                                    snapshot.data != null) {
+                                  chosenCategory = snapshot.data!.first;
+                                  return Padding(
+                                    padding: const EdgeInsets.all(10),
+                                    child: SizedBox(
+                                      height: 50,
+                                      child: DropdownButton<Category>(
+                                        value: chosenCategory,
+                                        icon: const Icon(Icons.keyboard_arrow_down),
+                                        items: snapshot.data!.map((category) {
+                                          return DropdownMenuItem(value: category,child: Text(category.name),);
+                                        }).toList(),
+                                        style: const TextStyle(
+                                          color: Colors.black, // Text color
+                                          fontSize: 16, // Text size
+                                          fontWeight: FontWeight.bold, // Text weight
+                                        ),
+                                        dropdownColor: Colors.grey[200],
+                                        elevation: 8,
+                                        isExpanded: true,
+                                        onChanged: (Category? value) { setState(() {
+                                          chosenCategory = value!;
+                                        }); },
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return const Center(
+                                    child: Text('No data available'),
+                                  );
+                                }
+                              }),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(10),
+                                child: TextButton(
+                                  onPressed: (){
+                                    _pickImage();
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                      MaterialStateProperty.all<Color>(Colors.blue)),
+                                  child: const Text(
+                                    'Choose Image',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 150,
+                                height: 150,
+                                decoration: BoxDecoration(
+                                  border: Border.all(),
+                                ),
+                                child: updateMode && !edited && widget.product?.imageUrl != null? Image.network(BackEndConfig.fetchImageString+widget.product!.imageUrl!):
+                                webImage.isNotEmpty
+                                    ? Image.memory(
+                                  webImage,
+                                  fit: BoxFit.fill,
+                                ) : const Center(child: Text('No Image selected')),
+                              )
+                            ],
                           ),
-                          child: _pickedImage != null ? Image.memory(webImage, fit: BoxFit.fill,) : const Center(child:Text('No Image selected')),
-                        )
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: TextButton(
-                        onPressed: () {
-                          updateMode? performUpdate(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage) :performInsert(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage);
-                        },
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.blue)),
-                        child: Text(
-                          updateMode ? 'Update' : 'Add',
-                          style: const TextStyle(color: Colors.white),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: TextButton(
+                              onPressed: () {
+                                updateMode? performUpdate(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage) :performInsert(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage);
+                              },
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                  MaterialStateProperty.all<Color>(Colors.blue)),
+                              child: Text(
+                                updateMode ? 'Update' : 'Add',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    )
                   ],
                 ),
-              )
-            ],
-          )),
+              ),
     );
   }
 }
@@ -296,7 +301,8 @@ List<Category> parseCategories(String responseBody) {
 
 Future<List<Category>> fetchAllCategories() async {
   final response =
-      await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString));
+      await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString),headers: ClientState().header);
+  print(response.body);
   if (response.statusCode == 200) {
     return parseCategories(response.body);
   } else {

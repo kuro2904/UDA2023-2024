@@ -30,12 +30,13 @@ class ProductBoxListState extends State<ProductBoxList>{
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  child: widget.items[index].imageUrl.isNotEmpty ? Image.network(
-                    BackEndConfig.fetchImageString + widget.items[index].imageUrl,
+                  padding: const EdgeInsets.only(left: 10),
+                  child: widget.items[index].imageUrl!.isNotEmpty ? Image.network(
+                    BackEndConfig.fetchImageString + widget.items[index].imageUrl!,
                     fit: BoxFit.cover,
                     width: 150,
                     height: 150,
-                  ) : const Text('No image'),
+                  ) : const SizedBox(width: 150, height: 150, child: Center(child: Text('No image'),),),
                 ),
                 Text(
                   widget.items[index].name,

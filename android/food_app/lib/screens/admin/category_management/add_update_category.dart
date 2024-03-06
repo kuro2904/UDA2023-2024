@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -27,8 +25,8 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
   TextEditingController categoryName = TextEditingController();
   TextEditingController categoryDescription = TextEditingController();
   bool updateMode = false;
-  Uint8List webImage = Uint8List(8);
-  File? _pickedImage;
+  Uint8List webImage = Uint8List(0);
+  bool edited = false;
 
   @override
   void initState() {
@@ -49,21 +47,15 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
     super.dispose();
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImage() async{
     final ImagePicker picker = ImagePicker();
-    if (updateMode) {
-      setState(() {
-        webImage = Uint8List(0);
-      });
-    }
     XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
+    if(image != null){
       var f = await image.readAsBytes();
       setState(() {
         webImage = f;
-        _pickedImage = File('a');
       });
-    } else {
+    }else{
       print('No image selected');
     }
   }
@@ -123,7 +115,8 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
       request.headers.addAll(header);
       request.fields['request'] = jsonEncode(body).toString();
       var response = await request.send();
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
+        edited = false;
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const CategoryPage()));
       } else {
@@ -185,7 +178,10 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                           padding: const EdgeInsets.all(10),
                           child: TextButton(
                             onPressed: () {
-                              _pickImage();
+                             setState(() {
+                               edited = true;
+                               _pickImage();
+                             });
                             },
                             style: ButtonStyle(
                                 backgroundColor:
@@ -203,8 +199,8 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                           decoration: BoxDecoration(
                             border: Border.all(),
                           ),
-                          child: updateMode? Image.network(BackEndConfig.fetchImageString+widget.category!.imageUrl):
-                          _pickedImage != null
+                          child: updateMode && !edited && widget.category?.imageUrl != null? Image.network(BackEndConfig.fetchImageString+widget.category!.imageUrl!):
+                          webImage.isNotEmpty
                               ? Image.memory(
                             webImage,
                             fit: BoxFit.fill,
