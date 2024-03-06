@@ -8,7 +8,6 @@ class ClientState { // Singleton
   static final ClientState _instance = ClientState._internal();
 
   bool isLogin = false;
-  String userRole = "";
   String serverMessage = "";
   String userName = "";
   String userPassword = "";
@@ -38,15 +37,15 @@ class ClientState { // Singleton
       userPassword = password;
       isLogin = true;
       token = "Basic ${base64Encode(utf8.encode('$username:$password'))}";
-      updateHeaderWithAuth();
       return isLogin;
     }
     return false;
   }
 
+
   Future<bool> signup(String name, String password, String phoneNumber, String address) async {
     final response = await postJsonRequest(
-      BackEndConfig.signUpString,
+      BackEndConfig.signUpAdminString,
       header,
       {
         "email": name,
@@ -83,13 +82,7 @@ class ClientState { // Singleton
     return [];
   }
 
-  void updateHeaderWithAuth() {
-    headerWithAuth = {
-      "Accept": "*/*",
-      "Content-Type": "application/json; charset=UTF-8",
-      "Authorization": token
-    };
-  }
+
 
   ClientState._internal() {
     header.addEntries({"Accept": "*/*"}.entries);
