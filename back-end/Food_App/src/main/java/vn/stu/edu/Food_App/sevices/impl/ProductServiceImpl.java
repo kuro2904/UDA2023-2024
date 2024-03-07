@@ -48,16 +48,19 @@ public class ProductServiceImpl implements ProductService  {
 
     @Override
     public ProductDTO insertProduct(ProductDTO productDTO, MultipartFile image) throws IOException {
-        Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(
-                () -> new ResourceNotFoundException("Category ","Id:",productDTO.getCategoryId())
-        );
+
         Product product = new Product();
         product.setId(productDTO.getId());
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
         product.setDescription(productDTO.getDescription());
-        if(image != null)product.setImageUrl(imageService.uploadImage(image));
-        product.setCategory(category);
+        if(image != null && image.getSize() >0)product.setImageUrl(imageService.uploadImage(image));
+        if(productDTO.getCategoryId() != null){
+            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Category ","Id:",productDTO.getCategoryId())
+            );
+            product.setCategory(category);
+        }
         return mapper.map(productRepository.save(product), ProductDTO.class);
     }
 
@@ -69,7 +72,7 @@ public class ProductServiceImpl implements ProductService  {
         if(productDTO.getName() != null) product.setName(productDTO.getName());
         if(productDTO.getPrice() != null) product.setPrice(productDTO.getPrice());
         if(productDTO.getDescription() != null) product.setDescription(productDTO.getDescription());
-        if(image != null) product.setImageUrl(imageService.uploadImage(image));
+        if(image != null && image.getSize() >0) product.setImageUrl(imageService.uploadImage(image));
         if(productDTO.getCategoryId() != null){
             Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(
                     () -> new ResourceNotFoundException("Category ","Id:",productDTO.getCategoryId())

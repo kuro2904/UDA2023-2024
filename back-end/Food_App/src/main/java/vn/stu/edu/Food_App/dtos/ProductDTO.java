@@ -14,6 +14,6 @@ public class ProductDTO {
     private String name;
     private String price;
     private String description;
-    private String imageUrl;
+    private String imageUrl="";
     private String categoryId;
 }

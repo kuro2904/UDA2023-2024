@@ -12,6 +12,6 @@ public class CategoryDTO {
     private String id;
     private String name;
     private String description;
-    private String imageUrl;
-    private List<String> productIds;
+    private String imageUrl="";
+    private List<String> productIds= new ArrayList<>();
 }

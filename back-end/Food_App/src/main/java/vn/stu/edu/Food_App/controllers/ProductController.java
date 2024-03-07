@@ -23,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> insertProduct(@RequestParam("request") String request, @RequestParam("image")MultipartFile image) throws IOException {
+    public ResponseEntity<ProductDTO> insertProduct(@RequestParam("request") String request, @RequestParam(name = "image",required = false)MultipartFile image) throws IOException {
         return new ResponseEntity<>(productService.insertProduct(mapper.readValue(request, ProductDTO.class),image), HttpStatus.CREATED);
     }
 
@@ -33,7 +33,7 @@ public class ProductController {
     }
 
     @PutMapping("product/{id}")
-    public ResponseEntity<ProductDTO> editProduct(@PathVariable String id,@RequestParam String request, @RequestParam("image") MultipartFile image) throws IOException {
+    public ResponseEntity<ProductDTO> editProduct(@PathVariable String id,@RequestParam String request, @RequestParam(name = "image",required = false) MultipartFile image) throws IOException {
         return ResponseEntity.ok(productService.editProduct(id,mapper.readValue(request, ProductDTO.class),image));
     }
 

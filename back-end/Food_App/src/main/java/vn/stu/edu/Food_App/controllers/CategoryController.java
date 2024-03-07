@@ -24,7 +24,7 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDTO> insert(@RequestParam("request") String request,@RequestPart(required = false) @RequestParam("image") MultipartFile image) throws IOException {
+    public ResponseEntity<CategoryDTO> insert(@RequestParam("request") String request, @RequestParam(name = "image",required = false) MultipartFile image) throws IOException {
         return new ResponseEntity<>(service.insert(mapper.readValue(request, CategoryDTO.class), image), HttpStatus.CREATED);
     }
 
@@ -34,7 +34,7 @@ public class CategoryController {
     }
 
     @PutMapping("category/{id}")
-    public ResponseEntity<CategoryDTO> editById(@PathVariable String id, @RequestParam String request, @RequestParam("image") MultipartFile image) throws IOException {
+    public ResponseEntity<CategoryDTO> editById(@PathVariable String id, @RequestParam String request, @RequestParam(name = "image",required = false) MultipartFile image) throws IOException {
         CategoryDTO categoryDTO = mapper.readValue(request, CategoryDTO.class);
         return ResponseEntity.ok(service.editById(id, categoryDTO, image));
     }
