@@ -85,7 +85,6 @@ class CategoryManagementState extends State<CategoryPage> {
       ),
     );
   }
-
 }
 
 List<Category> parseCategories(String responseBody){

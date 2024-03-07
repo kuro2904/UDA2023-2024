@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/utils/dialog.dart';
-import 'package:food_app/constants/backend_config.dart';
-import 'package:food_app/data/category.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/signup.dart';
 
@@ -21,13 +18,6 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
-  int _selectedIndex = 0;
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

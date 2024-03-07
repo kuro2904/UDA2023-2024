@@ -42,8 +42,9 @@ class SignUpPageState extends State<SignUpAdminPage> {
                       contentPadding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(50.0))),
-                      hintText: 'Name',
+                      hintText: 'Email (30 characters maximum)',
                     ),
+                    maxLength: 30,
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -68,8 +69,9 @@ class SignUpPageState extends State<SignUpAdminPage> {
                         border: OutlineInputBorder(
                             borderRadius:
                             BorderRadius.all(Radius.circular(50.0))),
-                        hintText: 'phone number',
+                        hintText: 'phone number (30 characters maximum)',
                       ),
+                      maxLength: 30,
                     ),
                   ),
                   Padding(
@@ -81,8 +83,9 @@ class SignUpPageState extends State<SignUpAdminPage> {
                         border: OutlineInputBorder(
                             borderRadius:
                             BorderRadius.all(Radius.circular(50.0))),
-                        hintText: 'address',
+                        hintText: 'address (300 characters maximum)',
                       ),
+                      maxLength: 300,
                     ),
                   ),
                   Padding(

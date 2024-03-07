@@ -150,17 +150,19 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                         child: TextField(
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: 'Category Id'),
+                              hintText: 'Category Id (10 characters maximum)'),
                           controller: categoryId,
                           enabled: updateMode ? false : true,
+                          maxLength: 10,
                         )),
                     Padding(
                         padding: const EdgeInsets.all(10),
                         child: TextField(
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(),
-                              hintText: 'Category Name'),
+                              hintText: 'Category Name (30 characters maximum)'),
                           controller: categoryName,
+                          maxLength: 30,
                         )),
                     Padding(
                         padding: const EdgeInsets.all(10),
@@ -169,6 +171,7 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                               border: OutlineInputBorder(),
                               hintText: 'Category Description'),
                           controller: categoryDescription,
+                          maxLength: 2550,
                         )),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,

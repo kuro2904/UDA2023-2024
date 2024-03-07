@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +28,8 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   final _onlyNumbersFormatter = FilteringTextInputFormatter.digitsOnly;
 
   late Future<List<Category>> futureCategory;
-  late Category chosenCategory;
-  Uint8List webImage = Uint8List(8);
+  Category? chosenCategory;
+  Uint8List webImage = Uint8List(0);
   var updateMode = false;
   var edited = false;
 
@@ -40,7 +39,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       productId.text = widget.product!.id.toString();
       productName.text = widget.product!.name.toString();
       productDescription.text = widget.product!.description.toString();
-      productPrice.text = widget.product!.price.toString();
+      productPrice.text = widget.product!.price.toString().replaceAll('k VND', '');
       updateMode = true;
     }
     futureCategory = fetchAllCategories();
@@ -57,7 +56,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   }
 
 
-  Future<void> performInsert(String id, String name, String price, String description, Category category,Uint8List image) async {
+  Future<void> performInsert(String id, String name, String price, String description, Category? category,Uint8List image) async {
     Uri url = Uri.parse(BackEndConfig.insertProductString);
     Map<String,String> header = {
       'Authorization': ClientState().token,
@@ -68,8 +67,10 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       'name': name,
       'price': '${price}k VND',
       'description':description,
-      'categoryId': category.id
     };
+    if(category != null){
+      body['categoryId'] = category.id;
+    }
     var request = http.MultipartRequest('POST',url);
     try {
       if (image.isNotEmpty) {
@@ -90,7 +91,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
     }
   }
 
-  Future<void> performUpdate(String id, String name, String price, String description, Category category,Uint8List image) async {
+  Future<void> performUpdate(String id, String name, String price, String description, Category? category,Uint8List image) async {
     Uri url = Uri.parse(BackEndConfig.updateProductString+id);
     Map<String,String> header = {
       'Authorization': ClientState().token,
@@ -100,40 +101,44 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       'name': name,
       'price': '${price}k VND',
       'description':description,
-      'categoryId': category.id
     };
+    if(category != null){
+      body['categoryId'] = category.id;
+    }
     var request = http.MultipartRequest('PUT',url);
     try {
       if (image.isNotEmpty) {
-        List<int> data = webImage.cast();
+        List<int> data = image.cast();
         request.files.add(http.MultipartFile.fromBytes('image', data,filename: 'asd.jpg'));
       }
       request.headers.addAll(header);
       request.fields['request'] = jsonEncode(body).toString();
       var response = await request.send();
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const ProductPage()));
       }else{
-        print('Insertion failed with status code: ${response.statusCode}}');
+        print('Update failed with status code: ${response.statusCode} ${response}');
       }
     } on Exception catch (e) {
       print(e.toString());
     }
   }
 
-  Future<void> _pickImage() async{
+  Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
     XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if(image != null){
+    if (image != null) {
       var f = await image.readAsBytes();
       setState(() {
+        edited = true;
         webImage = f;
       });
-    }else{
+    } else {
       print('No image selected');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -157,17 +162,19 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                               child: TextField(
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    hintText: 'Product Id'),
+                                    hintText: 'Product Id (10 characters maximum)'),
                                 enabled: updateMode? false : true,
                                 controller: productId,
+                                maxLength: 10,
                               )),
                           Padding(
                               padding: const EdgeInsets.all(10),
                               child: TextField(
                                 decoration: const InputDecoration(
                                     border: OutlineInputBorder(),
-                                    hintText: 'Product Name'),
+                                    hintText: 'Product Name (30 characters maximum)'),
                                 controller: productName,
+                                maxLength: 30,
                               )),
                           Padding(
                               padding: const EdgeInsets.all(10),
@@ -176,14 +183,16 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                                     border: OutlineInputBorder(),
                                     hintText: 'Product Description'),
                                 controller: productDescription,
+                                maxLength: 2555,
                               )),
                           Padding(
                               padding: const EdgeInsets.all(10),
                               child: TextField(
                                 decoration: const InputDecoration(
                                   border: OutlineInputBorder(),
-                                  hintText: 'Product Price',
+                                  hintText: 'Product Price (10 characters maximum)',
                                 ),
+                                maxLength: 10,
                                 inputFormatters: [_onlyNumbersFormatter],
                                 controller: productPrice,
                               )),
@@ -205,7 +214,9 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                                 } else if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
                                 } else if (snapshot.hasData &&
-                                    snapshot.data != null) {
+                                    snapshot.data!.isEmpty) {
+                                  return const Text('No data available');
+                                } else {
                                   chosenCategory = snapshot.data!.first;
                                   return Padding(
                                     padding: const EdgeInsets.all(10),
@@ -230,10 +241,6 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
                                         }); },
                                       ),
                                     ),
-                                  );
-                                } else {
-                                  return const Center(
-                                    child: Text('No data available'),
                                   );
                                 }
                               }),
@@ -294,18 +301,18 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
   }
 }
 
-List<Category> parseCategories(String responseBody) {
+List<Category> parseCategories(String responseBody){
   final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
+  print(responseBody);
   return parser.map<Category>((json) => Category.fromJson(json)).toList();
 }
 
-Future<List<Category>> fetchAllCategories() async {
-  final response =
-      await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString),headers: ClientState().header);
-  print(response.body);
-  if (response.statusCode == 200) {
+Future<List<Category>> fetchAllCategories() async{
+  final response = await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString));
+  if(response.statusCode == 200){
     return parseCategories(response.body);
-  } else {
+  }
+  else{
     throw Exception('Unable to fetch all Category');
   }
 }

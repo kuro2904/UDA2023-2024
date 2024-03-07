@@ -1,13 +1,8 @@
-import 'dart:js';
-
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_app/screens/admin/login_page.dart';
-import 'package:food_app/screens/admin/main_page.dart';
-import 'package:food_app/screens/admin/register_admin.dart';
 import 'package:food_app/screens/android/home.dart';
-import 'package:food_app/screens/android/login.dart';
 
 
 void main() {
