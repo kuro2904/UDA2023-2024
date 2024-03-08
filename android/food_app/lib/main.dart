@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_app/screens/admin/login_page.dart';
+import 'package:food_app/screens/android/android_main.dart';
 import 'package:food_app/screens/android/home.dart';
 
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown
     ]);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: _getHome(),
     );
   }
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
     if (kIsWeb) {
       return const AdminLogin();
     } else {
-      return const HomePage();
+      return const AndroidMain();
     }
   }
 

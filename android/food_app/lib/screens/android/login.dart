@@ -1,28 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/utils/dialog.dart';
-import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/signup.dart';
 import 'package:food_app/theme/theme.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-// for testing remove later
-// void main() => runApp(const MyApp());
-//
-// class MyApp extends StatelessWidget {
-//   const MyApp({Key? key}) : super(key: key);
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Login Page',
-//       home: Scaffold(
-//         body: const LoginPage(),
-//       )
-//     );
-//   }
-// }
-//
 
 class LoginPage extends StatefulWidget  {
   const LoginPage({super.key});

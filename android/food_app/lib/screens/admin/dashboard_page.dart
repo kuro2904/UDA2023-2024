@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/screens/admin/category_management/category_management_page.dart';
 import 'package:food_app/screens/admin/delivery_men_management/delivery_men_management_page.dart';
 import 'package:food_app/screens/admin/discount_management/discount_management_page.dart';
 import 'package:food_app/screens/admin/product_management/product_management_page.dart';
+
+import 'category_management/category_management_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});

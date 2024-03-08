@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/signup.dart';
-
 import 'home_components/category_item.dart';
 import 'home_components/category_menu.dart';
 import 'home_components/expandable_FloatingActionButton.dart';

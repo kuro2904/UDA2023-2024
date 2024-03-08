@@ -47,6 +47,7 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
     };
     Uri url = Uri.parse(BackEndConfig.insertDiscountString);
     var response = await http.post(url,headers: ClientState().headerWithAuth, body: jsonEncode(body));
+    print(response.statusCode);
     if(response.statusCode == 201){
       Navigator.push(context, MaterialPageRoute(builder: (context) => const DiscountPage()));
     }
