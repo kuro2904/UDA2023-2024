@@ -6,6 +6,7 @@ class BackEndConfig {
   static const String insertProductString = "http://$serverAddr/api/products";
   static const String updateProductString = "http://$serverAddr/api/products/product/";
   static const String getProductString = "http://$serverAddr/api/products/product/";
+  static const String getProductByCategory = "http://$serverAddr/api/products/category/";
   static const String fetchAllCategoryString = "http://$serverAddr/api/categories";
   static const String insertCategoryString = "http://$serverAddr/api/categories";
   static const String deleteCategoryString = "http://$serverAddr/api/categories/category/";

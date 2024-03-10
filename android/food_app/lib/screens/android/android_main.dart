@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:food_app/screens/android/home.dart';
 import 'package:food_app/screens/android/login.dart';
+import 'package:food_app/screens/android/signup.dart';
 
+import '../../data/client_state.dart';
 import 'cart_page.dart';
+import 'home_components/expandable_FloatingActionButton.dart';
 
 class AndroidMain extends StatefulWidget{
   const AndroidMain({super.key});
@@ -35,7 +36,52 @@ class AndroidMainState extends State<AndroidMain>{
       ],
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-      )
+      ),
+      floatingActionButton: ClientState().isLogin ? null : ExpandableFab(
+        initialOpen: false,
+        distance: 10,
+        icon: const Icon(Icons.menu),
+        children: [
+          ElevatedButton(
+            // Just for testing
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginPage()
+                  )
+              ); // Đến login screen
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AndroidMain())
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+            ),
+            child: const Icon(Icons.login),
+          ),
+          ElevatedButton(
+            // Just for testing
+            onPressed: () async {
+              await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SignUpPage()
+                  )
+              );
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AndroidMain())
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const CircleBorder(),
+            ),
+            child: const Icon(Icons.app_registration),
+          ),
+        ],
+      ),
     );
   }
 }

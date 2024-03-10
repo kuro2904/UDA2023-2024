@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:food_app/data/product.dart';
 import 'package:food_app/utils/network.dart';
 import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/category.dart';
@@ -77,6 +78,16 @@ class ClientState { // Singleton
     if (response.statusCode == 200) {
       final parser = json.decode(serverMessage).cast<Map<String, dynamic>>();
       return parser.map<Category>((json) => Category.fromJson(json)).toList();
+    }
+    return [];
+  }
+  
+  Future<List<Product>> getProductByCategory(String categoryID) async {
+    final response = await getRequest("${BackEndConfig.getProductByCategory}/$categoryID");
+    serverMessage = response.body;
+    if (response.statusCode == 200) {
+      final parser = json.decode(serverMessage).cast<Map<String, dynamic>>();
+      return parser.map<Product>((json) => Product.fromJson(json)).toList();
     }
     return [];
   }

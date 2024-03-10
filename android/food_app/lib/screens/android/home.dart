@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/data/client_state.dart';
-import 'package:food_app/screens/android/signup.dart';
+import 'package:food_app/screens/android/category_product.dart';
+import 'package:food_app/utils/dialog.dart';
 import 'home_components/category_item.dart';
-import 'home_components/category_menu.dart';
-import 'home_components/expandable_FloatingActionButton.dart';
-import 'login.dart';
+import 'home_components/wrap_list_menu.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,11 +19,8 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Food App', style: TextStyle(color: Colors.red,fontSize: 30),),
-      ),
-      body: Padding(
+    return Material(
+      child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
         child: Column(
           children: [
@@ -55,7 +51,7 @@ class HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child:
-                          const Icon(Icons.manage_search, color: Colors.white),
+                      const Icon(Icons.manage_search, color: Colors.white),
                     ),
                   ),
                 ],
@@ -83,58 +79,23 @@ class HomePageState extends State<HomePage> {
                 if (snapshot.hasData == false) {
                   return const Text("No Data");
                 }
-                return CategoryMenu(children: snapshot.data!.map((e) {
-                  return CategoryItem(category: e);
+                return WrapListMenu(children: snapshot.data!.map((e) {
+                  return CategoryItem(
+                    category: e,
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CategoryProductPage(categoryID: e.id)
+                        ),
+                      );
+                    },
+                  );
                 }).toList());
               },
             ),
           ],
         ),
-      ),
-      floatingActionButton: ClientState().isLogin ? null : ExpandableFab(
-        initialOpen: false,
-        distance: 10,
-        icon: const Icon(Icons.menu),
-        children: [
-          ElevatedButton(
-            // Just for testing
-            onPressed: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const LoginPage()
-                  )
-              ); // Đến login screen
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomePage())
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-            ),
-            child: const Icon(Icons.login),
-          ),
-          ElevatedButton(
-            // Just for testing
-            onPressed: () async {
-              await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SignUpPage()
-                  )
-              );
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage())
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const CircleBorder(),
-            ),
-            child: const Icon(Icons.app_registration),
-          ),
-        ],
       ),
     );
   }
