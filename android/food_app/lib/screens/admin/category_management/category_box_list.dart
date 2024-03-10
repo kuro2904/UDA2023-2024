@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:food_app/data/client_state.dart';
 
 import 'package:http/http.dart' as http;
 import '../../../constants/backend_config.dart';
@@ -23,7 +24,11 @@ class CategoryBoxState extends State<CategoryBoxList> {
 
   Future<void> deleteCategory(Category item) async {
     final context = this.context;
-    final response = await http.delete(Uri.parse(BackEndConfig.deleteCategoryString + item.id));
+    Map<String, String> header = {
+      'Authorization': ClientState().token,
+      'Content-Type': 'application/json; charset=UTF-8'
+    };
+    final response = await http.delete(Uri.parse(BackEndConfig.deleteCategoryString + item.id),headers:header);
     if (response.statusCode == 200) {
       setState(() {
         widget.items.remove(item);
@@ -62,12 +67,13 @@ class CategoryBoxState extends State<CategoryBoxList> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  child: widget.items[index].imageUrl.isNotEmpty ? Image.network(
-                    BackEndConfig.fetchImageString + widget.items[index].imageUrl,
+                  padding: const EdgeInsets.only(left: 10),
+                  child: widget.items[index].imageUrl!.isNotEmpty ? Image.network(
+                    BackEndConfig.fetchImageString + widget.items[index].imageUrl!,
                     fit: BoxFit.cover,
                     width: 150,
                     height: 150,
-                  ) : const Text('No image'),
+                  ) : const SizedBox(width: 150, height: 150, child: Center(child: Text('No image'),),),
                 ),
                 Text(
                   widget.items[index].name,
@@ -101,7 +107,7 @@ class CategoryBoxState extends State<CategoryBoxList> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>  AddOrUpdateCategoryPage(category: item),
+                            builder: (context) => AddOrUpdateCategoryPage(category: item),
                           ),
                         );
                       }
@@ -124,6 +130,7 @@ class CategoryBoxState extends State<CategoryBoxList> {
                   },
                   child: const Icon(Icons.more_horiz),
                 ),
+
 
               ],
             ),

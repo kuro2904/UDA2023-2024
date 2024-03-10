@@ -85,11 +85,11 @@ class CategoryManagementState extends State<CategoryPage> {
       ),
     );
   }
-
 }
 
 List<Category> parseCategories(String responseBody){
   final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
+  print(responseBody);
   return parser.map<Category>((json) => Category.fromJson(json)).toList();
 }
 

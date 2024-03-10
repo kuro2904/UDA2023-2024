@@ -38,7 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
         category.setId(categoryDTO.getId());
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
-        if(image != null) category.setImageUrl(imageService.uploadImage(image));
+        if(image != null && image.getSize() >0) category.setImageUrl(imageService.uploadImage(image));
         return mapper.map(categoryRepository.save(category),CategoryDTO.class);
     }
 
@@ -69,7 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
             }
             category.setProducts(products);
         }
-        return mapper.map(category,CategoryDTO.class);
+        return mapper.map(categoryRepository.save(category),CategoryDTO.class);
     }
 
     @Override

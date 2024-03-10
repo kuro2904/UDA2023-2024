@@ -22,7 +22,6 @@ public class Product {
     private String price;
     @Column( nullable = false, length = 2555)
     private String description;
-    @Column(nullable = false)
     private String imageUrl;
     @ManyToOne
     @JoinColumn(name = "category_id")

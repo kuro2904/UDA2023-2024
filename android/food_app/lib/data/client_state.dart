@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:food_app/utils/network.dart';
 import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/category.dart';
