@@ -16,7 +16,7 @@ class AndroidMain extends StatefulWidget{
 
 class AndroidMainState extends State<AndroidMain>{
   int _selectedIndex = 0;
-  List<Widget> screens = [const HomePage(), const CartPage()];
+  List<Widget> screens = [const HomePage(), CartPage(orderDetails: ClientState().cart,)];
   Widget currentPage = const HomePage();
   void _onItemTapped(int index) {
     setState(() {
