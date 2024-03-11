@@ -35,7 +35,6 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final parentState = context.findAncestorStateOfType<AndroidMainState>();
     return Material(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
@@ -132,7 +131,7 @@ class HomePageState extends State<HomePage> {
                       backgroundColor: Colors.white,
                       textColor: Colors.black,
                       onTap: (){
-                        // parentState?.setFragment();
+                        // TODO: form chọn
                       },
                     );
                   }).toList(),
