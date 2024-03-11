@@ -12,10 +12,11 @@ class WrapListMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      height: 200,
       child: ListView(
         padding: const EdgeInsets.all(8.0),
-        scrollDirection: Axis.vertical,
+        scrollDirection: Axis.horizontal,
         children: [
           Wrap(
             spacing: 8.0,

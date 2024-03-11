@@ -83,7 +83,7 @@ class ClientState { // Singleton
   }
   
   Future<List<Product>> getProductByCategory(String categoryID) async {
-    final response = await getRequest("${BackEndConfig.getProductByCategory}/$categoryID");
+    final response = await getRequest("${BackEndConfig.getProductByCategory}$categoryID");
     serverMessage = response.body;
     if (response.statusCode == 200) {
       final parser = json.decode(serverMessage).cast<Map<String, dynamic>>();
