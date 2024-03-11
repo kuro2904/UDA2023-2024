@@ -117,25 +117,29 @@ class HomePageState extends State<HomePage> {
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
                 )),
-            Expanded(
-              child: FutureBuilder(future: futureProducts, builder: (context, snapshot) {
-                if(snapshot.connectionState == ConnectionState.waiting){
-                  return const Center(child: CircularProgressIndicator());
-                }else if( snapshot.hasError){
-                  return Text('Error: ${snapshot.error}');
-                }else if (snapshot.hasData && snapshot.data != null) {
-                  return GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                  ),itemCount: snapshot.data!.length, itemBuilder: (context, index){
-                    return Padding(padding: const EdgeInsets.all(8.0), child: ProductItem(product: snapshot.data![index],onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetail(item: snapshot.data![index])));
-                    },),);
-                  });
-                } else {
-                  return const Center(child: Text('No data available'));
-                }
-              }),
-            )
+            Expanded(child: FutureBuilder(future: futureProducts, builder: (context, snapshot) {
+              if(snapshot.connectionState == ConnectionState.waiting){
+                return const Center(child: CircularProgressIndicator());
+              }else if( snapshot.hasError){
+                return Text('Error: ${snapshot.error}');
+              }else if (snapshot.hasData && snapshot.data != null) {
+                return WrapListMenu(
+                  scrollDirection: Axis.vertical,
+                  children: snapshot.data!.map((e) {
+                    return ProductItem(
+                      product: e,
+                      backgroundColor: Colors.white,
+                      textColor: Colors.black,
+                      onTap: (){
+                        // TODO: form chọn
+                      },
+                    );
+                  }).toList(),
+                );
+              } else {
+                return const Center(child: Text('No data available'));
+              }
+            }),),
           ],
         ),
       ),
