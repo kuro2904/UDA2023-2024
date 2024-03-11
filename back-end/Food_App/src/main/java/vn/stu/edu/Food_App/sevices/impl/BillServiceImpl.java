@@ -51,7 +51,7 @@ public class BillServiceImpl implements BillService {
             );
             BillDetail billDetail = new BillDetail();
             billDetail.setQuantity(products.getQuantity());
-            billDetail.getProducts().add(product);
+            billDetail.setProducts(product);
             billDetail.setTotal_price(billDetail.getTotal_price());
             details.add(billDetailRepository.save(billDetail));
         }
