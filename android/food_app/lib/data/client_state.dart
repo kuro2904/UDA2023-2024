@@ -92,7 +92,9 @@ class ClientState { // Singleton
     return [];
   }
 
+  void addToCart(Product item){
 
+  }
 
   ClientState._internal() {
     header.addEntries({"Accept": "*/*"}.entries);

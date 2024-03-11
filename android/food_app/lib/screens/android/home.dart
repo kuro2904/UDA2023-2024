@@ -6,6 +6,7 @@ import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/category_product.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
+import 'package:food_app/screens/android/product_detail_page.dart';
 import '../../data/product.dart';
 import 'home_components/category_item.dart';
 import 'home_components/wrap_list_menu.dart';
@@ -121,7 +122,9 @@ class HomePageState extends State<HomePage> {
                   return GridView.builder(gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                   ),itemCount: snapshot.data!.length, itemBuilder: (context, index){
-                    return Padding(padding: const EdgeInsets.all(8.0), child: ProductItem(product: snapshot.data![index],onTap: (){},),);
+                    return Padding(padding: const EdgeInsets.all(8.0), child: ProductItem(product: snapshot.data![index],onTap: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> ProductDetail(item: snapshot.data![index])));
+                    },),);
                   });
                 } else {
                   return const Center(child: Text('No data available'));
