@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/product.dart';
 
-import '../../../../data/category.dart';
+import '../../../constants/backend_config.dart';
 
-class CategoryItem extends StatelessWidget{
-  const CategoryItem({
+class ProductItem extends StatelessWidget { // TODO: Chỉ để test làm lại sau
+  const ProductItem({
     super.key,
-    required this.category,
+    required this.product,
     this.width = 150,
     this.height = 150,
     this.backgroundColor = Colors.blue,
@@ -15,7 +15,7 @@ class CategoryItem extends StatelessWidget{
     this.onTap,
   });
 
-  final Category category;
+  final Product product;
   final double width, height;
   final Color backgroundColor, textColor;
   final Decoration? decoration;
@@ -36,13 +36,13 @@ class CategoryItem extends StatelessWidget{
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.network(
-              "${BackEndConfig.fetchImageString}${category.imageUrl}",
+              "${BackEndConfig.fetchImageString}${product.imageUrl}",
               width: width * 0.7,
               height: height * 0.7,
             ),
             SizedBox(height: height / 20,),
             Text(
-              category.name,
+              product.name,
               style: TextStyle(
                 color: textColor,
                 fontSize: height / 10,
@@ -53,5 +53,4 @@ class CategoryItem extends StatelessWidget{
       ),
     );
   }
-
 }

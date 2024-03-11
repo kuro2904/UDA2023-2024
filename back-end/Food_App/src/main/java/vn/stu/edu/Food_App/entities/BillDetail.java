@@ -18,15 +18,8 @@ public class BillDetail {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private int quantity;
-    @ManyToMany(targetEntity = Product.class)
-    private Set<Product> products = new HashSet<>();
+    @ManyToOne(targetEntity = Product.class)
+    private Product products;
     private String total_price;
 
-    public String getTotal_price() {
-        long totalPrice = 1L;
-        for(Product product : products){
-            totalPrice = Long.parseLong(product.getPrice().replace("k VND","")) * quantity;
-        }
-        return String.valueOf(totalPrice) + "k VND";
-    }
 }
