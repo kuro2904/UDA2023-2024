@@ -5,7 +5,6 @@ class OrderDetail{
   int quantity;
   final Product product;
   final String totalPrice;
-
   OrderDetail(this.id, this.totalPrice, { required this.quantity, required this.product});
 
 }

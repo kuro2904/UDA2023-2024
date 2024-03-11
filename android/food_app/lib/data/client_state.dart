@@ -94,15 +94,6 @@ class ClientState { // Singleton
     return [];
   }
 
-  void addCart(Product item, int quantity) {
-    for (var i in cart) {
-      if (i.product == item) {
-        i.quantity += quantity;
-        return;
-      }
-    }
-    cart.add(OrderDetail("id", item.price, quantity: quantity, product: item));
-  }
 
 
   ClientState._internal() {
