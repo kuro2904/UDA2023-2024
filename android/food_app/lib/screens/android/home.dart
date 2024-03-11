@@ -8,6 +8,8 @@ import 'package:food_app/screens/android/category_product.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
 import 'package:food_app/screens/android/product_detail_page.dart';
 import '../../data/product.dart';
+import '../../utils/dialog.dart';
+import 'android_main.dart';
 import 'home_components/category_item.dart';
 import 'home_components/wrap_list_menu.dart';
 import 'package:http/http.dart' as http;
@@ -87,19 +89,22 @@ class HomePageState extends State<HomePage> {
                 if (snapshot.hasData == false) {
                   return const Text("No Data");
                 }
-                return WrapListMenu(children: snapshot.data!.map((e) {
-                  return CategoryItem(
-                    category: e,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => CategoryProductPage(categoryID: e.id)
-                        ),
-                      );
-                    },
-                  );
-                }).toList());
+                return WrapListMenu(
+                  height: 125,
+                  margin: const EdgeInsets.fromLTRB(3, 1, 3, 1),
+                  scrollDirection: Axis.horizontal,
+                  children: snapshot.data!.map((e) {
+                    return CategoryItem(
+                      category: e,
+                      width: 100,
+                      height: 100,
+                      backgroundColor: Colors.white,
+                      textColor: Colors.black,
+                      onTap: () {
+                        showAlertDialog(context, e.name, e.id);
+                      },
+                    );
+                  }).toList(),);
               },
             ),
             Padding(

@@ -29,7 +29,7 @@ class ProductItem extends StatelessWidget { // TODO: Chỉ để test làm lại
         width: width,
         height: height,
         decoration: decoration ?? BoxDecoration(
-          color: Colors.blue,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Column(
