@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:food_app/data/OrderDetail.dart';
 import 'package:food_app/data/product.dart';
 import 'package:food_app/utils/network.dart';
 import 'package:food_app/constants/backend_config.dart';
@@ -12,6 +13,7 @@ class ClientState { // Singleton
   String userName = "";
   String userPassword = "";
   String token = "";
+  List<OrderDetail> cart = [];
 
   Map<String, String> header = {};
   Map<String, String> headerWithAuth = {};
@@ -92,6 +94,15 @@ class ClientState { // Singleton
     return [];
   }
 
+  void addCart(Product item, int quantity) {
+    for (var i in cart) {
+      if (i.product == item) {
+        i.quantity += quantity;
+        return;
+      }
+    }
+    cart.add(OrderDetail("id", item.price, quantity: quantity, product: item));
+  }
 
 
   ClientState._internal() {

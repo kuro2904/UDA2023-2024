@@ -29,7 +29,7 @@ class CategoryItem extends StatelessWidget{
         width: width,
         height: height,
         decoration: decoration ?? BoxDecoration(
-          color: Colors.blue,
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Column(
@@ -45,7 +45,7 @@ class CategoryItem extends StatelessWidget{
               category.name,
               style: TextStyle(
                 color: textColor,
-                fontSize: height / 10,
+                fontSize: height / 8,
               ),
             ),
           ],
