@@ -26,6 +26,12 @@ class AndroidMainState extends State<AndroidMain>{
     });
   }
 
+  void setFragment(Widget widget) {
+    setState(() {
+      currentPage = widget;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
