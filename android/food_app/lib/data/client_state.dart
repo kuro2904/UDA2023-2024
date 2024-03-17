@@ -95,8 +95,6 @@ class ClientState { // Singleton
     return [];
   }
 
-
-
   ClientState._internal() {
     header.addEntries({"Accept": "*/*"}.entries);
     header.addEntries({"Content-Type": "application/json; charset=UTF-8"}.entries);

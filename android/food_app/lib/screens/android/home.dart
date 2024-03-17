@@ -7,6 +7,7 @@ import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/category_product.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
 import 'package:food_app/screens/android/product_detail_page.dart';
+import '../../data/category.dart';
 import '../../data/product.dart';
 import '../../utils/dialog.dart';
 import 'android_main.dart';
@@ -26,19 +27,36 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
   late Future<List<Product>> futureProducts;
+  late Future<List<Category>> futureCategory;
 
   @override
   void initState() {
     super.initState();
     futureProducts = fetchProducts();
+    futureCategory = ClientState().getAllCategories();
   }
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 50, 20, 0),
-        child: Column(
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              expandedHeight: 200.0,
+              floating: false,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: const Text('Food app'),
+                background: Container(
+                  // Customize your search bar background here
+                  color: Colors.blue,
+                ),
+              ),
+            ),
+          ];
+        },
+        body: Column(
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 30),
@@ -82,29 +100,34 @@ class HomePageState extends State<HomePage> {
                           color: Colors.indigo,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
-                )),
+                ),
+            ),
             FutureBuilder(
-              future: ClientState().getAllCategories(),
+              future: futureCategory,
               builder: (context, snapshot) {
+                if(snapshot.connectionState == ConnectionState.waiting){
+                  return const Center(child: CircularProgressIndicator());
+                }
                 if (snapshot.hasData == false) {
                   return const Text("No Data");
                 }
-                return WrapListMenu(
-                  height: 125,
-                  margin: const EdgeInsets.fromLTRB(3, 1, 3, 1),
+                return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  children: snapshot.data!.map((e) {
-                    return CategoryItem(
-                      category: e,
-                      width: 100,
-                      height: 100,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black,
-                      onTap: () {
-                        showAlertDialog(context, e.name, e.id);
-                      },
-                    );
-                  }).toList(),);
+                  child: Row(
+                    children: snapshot.data!.map((e) {
+                      return CategoryItem(
+                        category: e,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black,
+                        onTap: () {
+                          setState(() {
+                            futureProducts = ClientState().getProductByCategory(e.id);
+                          });
+                        },
+                      );
+                    }).toList(),
+                  ),
+                );
               },
             ),
             Padding(
@@ -116,30 +139,34 @@ class HomePageState extends State<HomePage> {
                           color: Colors.indigo,
                           fontSize: 20,
                           fontWeight: FontWeight.bold)),
-                )),
-            Expanded(child: FutureBuilder(future: futureProducts, builder: (context, snapshot) {
-              if(snapshot.connectionState == ConnectionState.waiting){
-                return const Center(child: CircularProgressIndicator());
-              }else if( snapshot.hasError){
-                return Text('Error: ${snapshot.error}');
-              }else if (snapshot.hasData && snapshot.data != null) {
-                return WrapListMenu(
-                  scrollDirection: Axis.vertical,
-                  children: snapshot.data!.map((e) {
-                    return ProductItem(
-                      product: e,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black,
-                      onTap: (){
-                        // TODO: form chọn
-                      },
-                    );
-                  }).toList(),
-                );
-              } else {
-                return const Center(child: Text('No data available'));
-              }
-            }),),
+                ),
+            ),
+            Expanded(
+              child: FutureBuilder(
+                future: futureProducts,
+                builder: (context, snapshot) {
+                  if(snapshot.connectionState == ConnectionState.waiting){
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasData == false) {
+                    return const Text("No Data");
+                  }
+                  return WrapListMenu(
+                    scrollDirection: Axis.vertical,
+                    children: snapshot.data!.map((e) {
+                      return ProductItem(
+                        product: e,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black,
+                        onTap: (){
+                          // TODO: form chọn
+                        },
+                      );
+                    }).toList(),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),

@@ -38,6 +38,7 @@ class AndroidMainState extends State<AndroidMain>{
   Widget build(BuildContext context) {
     return Scaffold(
       body: currentPage,
+      // resizeToAvoidBottomInset: false,
       bottomNavigationBar: BottomNavigationBar(items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(icon: Icon(Icons.home),label: 'Home'),
         BottomNavigationBarItem(icon: Icon(Icons.shopping_cart),label: 'Cart'),
@@ -46,51 +47,6 @@ class AndroidMainState extends State<AndroidMain>{
         currentIndex: _selectedIndex,
         onTap: onItemTapped,
       ),
-      // floatingActionButton: ClientState().isLogin ? null : ExpandableFab(
-      //   initialOpen: false,
-      //   distance: 10,
-      //   icon: const Icon(Icons.menu),
-      //   children: [
-      //     ElevatedButton(
-      //       // Just for testing
-      //       onPressed: () async {
-      //         await Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => const LoginPage()
-      //             )
-      //         ); // Đến login screen
-      //         Navigator.pushReplacement(
-      //             context,
-      //             MaterialPageRoute(builder: (context) => const AndroidMain())
-      //         );
-      //       },
-      //       style: ElevatedButton.styleFrom(
-      //         shape: const CircleBorder(),
-      //       ),
-      //       child: const Icon(Icons.login),
-      //     ),
-      //     ElevatedButton(
-      //       // Just for testing
-      //       onPressed: () async {
-      //         await Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //                 builder: (context) => const SignUpPage()
-      //             )
-      //         );
-      //         Navigator.pushReplacement(
-      //             context,
-      //             MaterialPageRoute(builder: (context) => const AndroidMain())
-      //         );
-      //       },
-      //       style: ElevatedButton.styleFrom(
-      //         shape: const CircleBorder(),
-      //       ),
-      //       child: const Icon(Icons.app_registration),
-      //     ),
-      //   ],
-      // ),
     );
   }
 }
