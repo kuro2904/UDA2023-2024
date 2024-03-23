@@ -21,6 +21,7 @@ public class BillController {
 
     @PostMapping
     public ResponseEntity<BillDTO> placeOrder(@RequestBody BillDTO request){
+        System.out.println(request.toString());
         return new ResponseEntity<>(service.placeOrder(request), HttpStatus.CREATED);
     }
 

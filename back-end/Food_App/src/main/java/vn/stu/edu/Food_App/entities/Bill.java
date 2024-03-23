@@ -34,4 +34,5 @@ public class Bill {
     private List<DeliverMan> deliverMen = new ArrayList<>();
     @Enumerated
     private PaymentMethod paymentMethod;
+
 }

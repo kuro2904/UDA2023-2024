@@ -12,4 +12,10 @@ class OrderDetail {
     required this.quantity,
     required this.product,
   });
+
+  Map toJson() => {
+    'quantity': quantity,
+    'productId': product.id,
+    'total_price': totalPrice
+  };
 }

@@ -25,4 +25,19 @@ public class BillDTO {
     private String paymentMethod;
     private List<BillDetailDTO> details;
 
+    @Override
+    public String toString() {
+        return "BillDTO{" +
+                "id='" + id + '\'' +
+                ", user_id='" + user_id + '\'' +
+                ", cus_phone='" + cus_phone + '\'' +
+                ", cus_address='" + cus_address + '\'' +
+                ", createDate='" + createDate + '\'' +
+                ", status='" + status + '\'' +
+                ", discountId='" + discountId + '\'' +
+                ", deliveryManId='" + deliveryManId + '\'' +
+                ", paymentMethod='" + paymentMethod + '\'' +
+                ", details=" + details +
+                '}';
+    }
 }

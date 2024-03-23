@@ -38,13 +38,19 @@ public class BillServiceImpl implements BillService {
     @Override
     public BillDTO placeOrder(BillDTO orderRequest) {
         Bill order = new Bill();
+        Discount discount = null;
+        DeliverMan deliverMan = null;
         List<BillDetail> details = new ArrayList<>();
-        DeliverMan deliverMan = deliverManRepository.findById(orderRequest.getDeliveryManId()).orElseThrow(
-                ()-> new ResourceNotFoundException("Deliver man","Id", orderRequest.getDeliveryManId())
-        );
-        Discount discount = discountRepository.findById(orderRequest.getDiscountId()).orElseThrow(
-                () -> new ResourceNotFoundException("Discount","Id",orderRequest.getDiscountId())
-        );
+        if(orderRequest.getDeliveryManId() != null ) {
+            deliverMan = deliverManRepository.findById(orderRequest.getDeliveryManId()).orElseThrow(
+                    ()-> new ResourceNotFoundException("Deliver man","Id", orderRequest.getDeliveryManId())
+            );
+        }
+        if(orderRequest.getDiscountId() != null) {
+            discount = discountRepository.findById(orderRequest.getDiscountId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Discount","Id",orderRequest.getDiscountId())
+            );
+        }
         for(var products : orderRequest.getDetails()){
             Product product = productRepository.findById(products.getProductId()).orElseThrow(
                     () -> new ResourceNotFoundException("Product","Id", products.getProductId())
@@ -56,7 +62,7 @@ public class BillServiceImpl implements BillService {
             details.add(billDetailRepository.save(billDetail));
         }
 
-        if(orderRequest.getUser_id() != null){
+        if(orderRequest.getUser_id() != null && !orderRequest.getUser_id().isBlank()){
             User customer = userRepository.findById(orderRequest.getUser_id()).orElseThrow(
                     () -> new ResourceNotFoundException("User","Id", orderRequest.getUser_id())
             );
@@ -67,9 +73,9 @@ public class BillServiceImpl implements BillService {
             order.setCus_phone(orderRequest.getCus_phone());
             order.setCus_address(orderRequest.getCus_address());
         }
-        order.getDeliverMen().add(deliverMan);
+        if(deliverMan != null ) order.getDeliverMen().add(deliverMan);
         order.setId(UUID.randomUUID().toString());
-        order.getDiscounts().add(discount);
+        if(discount != null) order.getDiscounts().add(discount);
         order.setPaymentMethod(PaymentMethod.valueOf(orderRequest.getPaymentMethod()));
         order.setCreateDate(orderRequest.getCreateDate());
         order.setDetails(details);

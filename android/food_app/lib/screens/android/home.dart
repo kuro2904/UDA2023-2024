@@ -3,17 +3,16 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/constants/backend_config.dart';
+import 'package:food_app/data/OrderDetail.dart';
 import 'package:food_app/data/client_state.dart';
-import 'package:food_app/screens/android/category_product.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
-import 'package:food_app/screens/android/product_detail_page.dart';
 import '../../data/category.dart';
+import 'package:food_app/utils/pick_number_dialog.dart';
+import 'package:http/http.dart' as http;
+
 import '../../data/product.dart';
-import '../../utils/dialog.dart';
-import 'android_main.dart';
 import 'home_components/category_item.dart';
 import 'home_components/wrap_list_menu.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,6 +26,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   TextEditingController searchController = TextEditingController();
   late Future<List<Product>> futureProducts;
+  TextEditingController addToCartController = TextEditingController();
+  int quantity = 0;
   late Future<List<Category>> futureCategory;
 
   @override
@@ -34,6 +35,31 @@ class HomePageState extends State<HomePage> {
     super.initState();
     futureProducts = fetchProducts();
     futureCategory = ClientState().getAllCategories();
+  }
+
+  void showQuantityPickerDialog(Product product) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PickNumberDialog(
+          controller: addToCartController,
+          initialQuantity: quantity,
+          onQuantityChanged: (newQuantity) {
+            setState(() {
+              quantity = newQuantity;
+            });
+          },
+          function: () {
+            addToCart(product, quantity);
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+  }
+
+  void addToCart(Product product, int quantity) {
+    ClientState().cart.add(OrderDetail(quantity: quantity, product: product));
   }
 
   @override
@@ -49,7 +75,6 @@ class HomePageState extends State<HomePage> {
               flexibleSpace: FlexibleSpaceBar(
                 title: const Text('Food app'),
                 background: Container(
-                  // Customize your search bar background here
                   color: Colors.blue,
                 ),
               ),
@@ -143,29 +168,28 @@ class HomePageState extends State<HomePage> {
             ),
             Expanded(
               child: FutureBuilder(
-                future: futureProducts,
-                builder: (context, snapshot) {
-                  if(snapshot.connectionState == ConnectionState.waiting){
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (snapshot.hasData == false) {
-                    return const Text("No Data");
-                  }
-                  return WrapListMenu(
-                    scrollDirection: Axis.vertical,
-                    children: snapshot.data!.map((e) {
-                      return ProductItem(
-                        product: e,
-                        backgroundColor: Colors.white,
-                        textColor: Colors.black,
-                        onTap: (){
-                          // TODO: form chọn
-                        },
+                  future: futureProducts,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if (snapshot.hasData && snapshot.data != null) {
+                      return WrapListMenu(
+                        scrollDirection: Axis.vertical,
+                        children: snapshot.data!.map((e) {
+                          return ProductItem(
+                            product: e,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                            onTap: () => showQuantityPickerDialog(e),
+                          );
+                        }).toList(),
                       );
-                    }).toList(),
-                  );
-                },
-              ),
+                    } else {
+                      return const Center(child: Text('No data available'));
+                    }
+                  }),
             ),
           ],
         ),
