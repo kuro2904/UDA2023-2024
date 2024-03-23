@@ -1,16 +1,12 @@
-# food_app
+Commit log:
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Commit 26-02-2024 4AM
+1. Fix category.dart
+2. Update category_item.dart
+    - Change container to square
+    - Add text display
+    - Add on tap handler (not implemented yet)
+3. Add category_menu.dart
+    - Display categories
+4. Edit home.dart
+    - Add CategoryMenu for testing
