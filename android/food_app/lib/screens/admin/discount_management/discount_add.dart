@@ -1,12 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/constants/backend_config.dart';
-import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/discount.dart';
 import 'package:food_app/screens/admin/discount_management/discount_management_page.dart';
-import 'package:http/http.dart' as http;
 
 class AddDiscountPage extends StatefulWidget {
   const AddDiscountPage({super.key});
@@ -24,7 +18,7 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
 
   @override
   void initState() {
-    futureDiscounts = fetchAllDiscounts();
+    futureDiscounts = Discount.fetchAll();
     super.initState();
   }
 
@@ -35,22 +29,6 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
     discountStartDate.dispose();
     discountExpiredDate.dispose();
     super.dispose();
-  }
-
-  Future<void> performInsert(String id, int discountPercent, String startDate,
-      String expiredDate) async {
-    Map<String,dynamic> body = {
-      'id': id,
-      'discount_percent': discountPercent,
-      'start_date': startDate,
-      'expire_date':expiredDate
-    };
-    Uri url = Uri.parse(BackEndConfig.insertDiscountString);
-    var response = await http.post(url,headers: ClientState().headerWithAuth, body: jsonEncode(body));
-    print(response.statusCode);
-    if(response.statusCode == 201){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const DiscountPage()));
-    }
   }
 
   @override
@@ -106,8 +84,16 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextButton(
-                        onPressed: (){
-                          performInsert(discountId.text, int.parse(discountPercent.text),discountStartDate.text, discountExpiredDate.text);
+                        onPressed: () async {
+                            final result = await Discount.insert(
+                                discountId.text,
+                                int.parse(discountPercent.text),
+                                discountStartDate.text,
+                                discountExpiredDate.text
+                            );
+                            if (result) {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => const DiscountPage()));
+                            }
                           },
                         style: ButtonStyle(
                             backgroundColor:

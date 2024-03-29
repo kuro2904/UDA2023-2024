@@ -1,11 +1,5 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/data/client_state.dart';
 
-import 'package:http/http.dart' as http;
-import '../../../constants/backend_config.dart';
 import '../../../data/category.dart';
 import 'add_update_category.dart';
 
@@ -22,14 +16,10 @@ class CategoryBoxList extends StatefulWidget {
 class CategoryBoxState extends State<CategoryBoxList> {
 
 
-  Future<void> deleteCategory(Category item) async {
+  deleteCategory(Category item) async {
     final context = this.context;
-    Map<String, String> header = {
-      'Authorization': ClientState().token,
-      'Content-Type': 'application/json; charset=UTF-8'
-    };
-    final response = await http.delete(Uri.parse(BackEndConfig.deleteCategoryString + item.id),headers:header);
-    if (response.statusCode == 200) {
+    final response = await Category.delete(item.id);
+    if (response) {
       setState(() {
         widget.items.remove(item);
       });
@@ -69,7 +59,7 @@ class CategoryBoxState extends State<CategoryBoxList> {
                 Container(
                   padding: const EdgeInsets.only(left: 10),
                   child: widget.items[index].imageUrl!.isNotEmpty ? Image.network(
-                    BackEndConfig.fetchImageString + widget.items[index].imageUrl!,
+                    widget.items[index].getImageUrl(),
                     fit: BoxFit.cover,
                     width: 150,
                     height: 150,

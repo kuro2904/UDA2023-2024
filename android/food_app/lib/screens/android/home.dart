@@ -1,19 +1,9 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/constants/backend_config.dart';
-import 'package:food_app/data/client_state.dart';
-import 'package:food_app/screens/android/category_product.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
-import 'package:food_app/screens/android/product_detail_page.dart';
 import '../../data/category.dart';
 import '../../data/product.dart';
-import '../../utils/dialog.dart';
-import 'android_main.dart';
 import 'home_components/category_item.dart';
 import 'home_components/wrap_list_menu.dart';
-import 'package:http/http.dart' as http;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -32,8 +22,8 @@ class HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    futureProducts = fetchProducts();
-    futureCategory = ClientState().getAllCategories();
+    futureProducts = Product.fetchAll();
+    futureCategory = Category.fetchAll();
   }
 
   @override
@@ -121,7 +111,7 @@ class HomePageState extends State<HomePage> {
                         textColor: Colors.black,
                         onTap: () {
                           setState(() {
-                            futureProducts = ClientState().getProductByCategory(e.id);
+                            futureProducts = Category.fetchProduct(e.id);
                           });
                         },
                       );
@@ -171,21 +161,5 @@ class HomePageState extends State<HomePage> {
         ),
       ),
     );
-  }
-}
-
-List<Product> parseProducts(String responseBody){
-  final parser = json.decode(responseBody).cast<Map<String,dynamic>>();
-  return parser.map<Product>((json) => Product.fromJson(json)).toList();
-}
-
-
-Future<List<Product>> fetchProducts() async {
-  Uri url = Uri.parse(BackEndConfig.fetchAllProductString);
-  final response = await http.get(url);
-  if(response.statusCode == 200){
-    return parseProducts(response.body);
-  }else{
-    throw Exception('Unable to fetch all Products');
   }
 }

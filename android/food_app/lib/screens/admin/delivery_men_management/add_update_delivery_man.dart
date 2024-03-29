@@ -1,13 +1,6 @@
-
-import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:food_app/constants/backend_config.dart';
-import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/delivery_man.dart';
 import 'package:food_app/screens/admin/delivery_men_management/delivery_men_management_page.dart';
-import 'package:http/http.dart' as http;
 
 
 class AddOrUpdateDeliveryManPage extends StatefulWidget {
@@ -40,28 +33,6 @@ class AddOrUpdateDeliveryManState extends State<AddOrUpdateDeliveryManPage> {
     deliveryManId.dispose();
     deliveryManName.dispose();
     super.dispose();
-  }
-
-  Future<void> performInsert(String id, String name) async {
-    Map<String,String> body = {
-      'id':id,
-      'name':name
-    };
-    
-    var response = await http.post(Uri.parse(BackEndConfig.insertDeliveryManString),headers: ClientState().headerWithAuth, body: jsonEncode(body));
-    if(response.statusCode == 201){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const DeliveryMenPage()));
-    }
-    
-  }
-  Future<void>performUpdate(String name) async{
-    Map<String, String> body = {
-      'name': name
-    };
-    var response = await http.put(Uri.parse(BackEndConfig.updateDeliveryManString+widget.deliveryMan!.id),headers: ClientState().headerWithAuth,body: jsonEncode(body));
-    if(response.statusCode == 200){
-      Navigator.push(context, MaterialPageRoute(builder: (context) => const DeliveryMenPage()));
-    }
   }
 
   @override
@@ -102,8 +73,16 @@ class AddOrUpdateDeliveryManState extends State<AddOrUpdateDeliveryManPage> {
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextButton(
-                        onPressed: (){
-                          updateMode? performUpdate(deliveryManName.text) : performInsert(deliveryManId.text, deliveryManName.text);
+                        onPressed: () async {
+                          bool result = false;
+                          if (updateMode) {
+                            result = await DeliveryMan.update(widget.deliveryMan!.id, deliveryManName.text);
+                          } else {
+                            result = await DeliveryMan.insert(deliveryManId.text, deliveryManName.text);
+                          }
+                          if (result) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const DeliveryMenPage()));
+                          }
                         },
                         style: ButtonStyle(
                             backgroundColor:

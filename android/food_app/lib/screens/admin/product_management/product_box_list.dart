@@ -1,8 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/screens/admin/product_management/add_or_update_product.dart';
 
-import '../../../constants/backend_config.dart';
 import '../../../data/product.dart';
 
 class ProductBoxList extends StatefulWidget {
@@ -32,7 +30,7 @@ class ProductBoxListState extends State<ProductBoxList>{
                 Container(
                   padding: const EdgeInsets.only(left: 10),
                   child: widget.items[index].imageUrl!.isNotEmpty ? Image.network(
-                    BackEndConfig.fetchImageString + widget.items[index].imageUrl!,
+                    widget.items[index].getImageUrl(),
                     fit: BoxFit.cover,
                     width: 150,
                     height: 150,
@@ -75,7 +73,6 @@ class ProductBoxListState extends State<ProductBoxList>{
                         );
                       }
                     } catch (error) {
-                      print('Error: $error');
                       showDialog(
                         context: context,
                         builder: (context) => AlertDialog(

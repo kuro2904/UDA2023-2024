@@ -1,11 +1,6 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/product.dart';
 import 'package:food_app/screens/admin/product_management/product_box_list.dart';
-import 'package:http/http.dart' as http;
 
 import 'add_or_update_product.dart';
 
@@ -22,7 +17,7 @@ class CategoryManagementState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-    _futureProducts = fetchAllProducts();
+    _futureProducts = Product.fetchAll();
   }
 
   @override
@@ -86,17 +81,3 @@ class CategoryManagementState extends State<ProductPage> {
   }
 }
 
-List<Product> parseProducts(String responseBody) {
-  final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
-  return parser.map<Product>((json) => Product.fromJson(json)).toList();
-}
-
-Future<List<Product>> fetchAllProducts() async {
-  final response =
-      await http.get(Uri.parse(BackEndConfig.fetchAllProductString));
-  if (response.statusCode == 200) {
-    return parseProducts(response.body);
-  } else {
-    throw Exception('Unable to fetch all Category');
-  }
-}

@@ -1,13 +1,8 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/constants/backend_config.dart';
 
 import 'package:food_app/screens/admin/discount_management/discount_add.dart';
 import 'package:food_app/screens/admin/discount_management/discount_box_list.dart';
-import 'package:http/http.dart' as http;
-import '../../../data/discount.dart';
+import 'package:food_app/data/discount.dart';
 
 
 class DiscountPage extends StatefulWidget {
@@ -23,7 +18,7 @@ class DiscountManagementState extends State<DiscountPage> {
   @override
   void initState() {
     super.initState();
-    _futureDiscounts = fetchAllDiscounts();
+    _futureDiscounts = Discount.fetchAll();
   }
 
   @override
@@ -84,20 +79,5 @@ class DiscountManagementState extends State<DiscountPage> {
         ),
       ),
     );
-  }
-}
-
-List<Discount> parseAllDiscount(String responseBody) {
-  final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
-  return parser.map<Discount>((json) => Discount.fromJson(json)).toList();
-}
-
-Future<List<Discount>> fetchAllDiscounts() async {
-  final response =
-  await http.get(Uri.parse(BackEndConfig.fetchAllDiscountString));
-  if (response.statusCode == 200) {
-    return parseAllDiscount(response.body);
-  } else {
-    throw Exception('Unable to fetch all Discount');
   }
 }

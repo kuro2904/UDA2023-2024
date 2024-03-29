@@ -1,10 +1,5 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/delivery_man.dart';
-import 'package:http/http.dart' as http;
-import '../../../constants/backend_config.dart';
 import 'add_update_delivery_man.dart';
 
 
@@ -19,9 +14,9 @@ class DeliveryMenBoxList extends StatefulWidget {
 
 class CategoryBoxState extends State<DeliveryMenBoxList> {
 
-  Future<void> deleteDeliveryMan(DeliveryMan item) async {
-    final response = await http.delete(Uri.parse(BackEndConfig.deleteDeliveryManString + item.id),headers: ClientState().headerWithAuth);
-    if (response.statusCode == 200) {
+  deleteDeliveryMan(DeliveryMan item) async {
+    final response = await DeliveryMan.delete(item.id);
+    if (response) {
       setState(() {
         widget.items.remove(item);
       });

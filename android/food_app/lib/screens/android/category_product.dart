@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/data/category.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
 import 'package:food_app/utils/dialog.dart';
 
-import '../../data/client_state.dart';
 import 'home_components/wrap_list_menu.dart';
 
 class CategoryProductPage extends StatefulWidget {
@@ -28,7 +28,7 @@ class _CategoryProductPageState extends State<CategoryProductPage> {
         child: Column(
           children: [
             FutureBuilder(
-              future: ClientState().getProductByCategory(widget.categoryID),
+              future: Category.fetchProduct(widget.categoryID),
               builder: (context, snapshot) {
                 if (snapshot.hasData == false) {
                   return const Text("No Data");

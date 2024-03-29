@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/data/product.dart';
 
-import '../../../constants/backend_config.dart';
-
 class ProductItem extends StatelessWidget { // TODO: Chỉ để test làm lại sau
   const ProductItem({
     super.key,
@@ -36,7 +34,7 @@ class ProductItem extends StatelessWidget { // TODO: Chỉ để test làm lại
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.network(
-              "${BackEndConfig.fetchImageString}${product.imageUrl}",
+              product.getImageUrl(),
               width: width * 0.7,
               height: height * 0.7,
             ),

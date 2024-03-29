@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/data/client_state.dart';
 
 import '../../data/OrderDetail.dart';
 import 'cart_components/cart_item.dart';

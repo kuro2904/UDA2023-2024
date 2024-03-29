@@ -1,15 +1,8 @@
-import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-import 'package:food_app/constants/backend_config.dart';
-import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/admin/category_management/category_management_page.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../data/category.dart';
-import 'package:http/http.dart' as http;
+import '../../../utils/photo_utils.dart';
 
 class AddOrUpdateCategoryPage extends StatefulWidget {
   final Category? category;
@@ -26,7 +19,7 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
   TextEditingController categoryDescription = TextEditingController();
   bool updateMode = false;
   Uint8List webImage = Uint8List(0);
-  bool edited = false;
+  late Widget image;
 
   @override
   void initState() {
@@ -35,6 +28,13 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
       categoryName.text = widget.category!.name.toString();
       categoryDescription.text = widget.category!.description.toString();
       updateMode = true;
+      if (widget.category?.imageUrl != null) {
+        image = Image.network(widget.category!.getImageUrl());
+      } else {
+        image = const Center(child: Text('No Image selected'));
+      }
+    } else {
+      image = const Center(child: Text('No Image selected'));
     }
     super.initState();
   }
@@ -46,87 +46,6 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
     categoryDescription.dispose();
     super.dispose();
   }
-
-  Future<void> _pickImage() async{
-    final ImagePicker picker = ImagePicker();
-    XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if(image != null){
-      var f = await image.readAsBytes();
-      setState(() {
-        webImage = f;
-      });
-    }else{
-      print('No image selected');
-    }
-  }
-
-
-  Future<void> _insertData(
-      String id, String name, String description, Uint8List image) async {
-
-    Map<String, String> header = {
-      'Authorization': ClientState().token,
-      'Content-Type': 'multipart/form-data;'
-    };
-    Map<String, String> body = {
-      'id': id,
-      'name': name,
-      'description': description
-    };
-    try {
-      Uri url = Uri.parse(BackEndConfig.insertCategoryString);
-      var request = http.MultipartRequest('POST', url);
-      if (image.isNotEmpty) {
-        List<int> data = image.cast();
-        request.files.add(http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
-      }
-      request.headers.addAll(header);
-      request.fields['request'] = jsonEncode(body).toString();
-      var response = await request.send();
-      if (response.statusCode == 201) {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const CategoryPage()));
-      } else {
-        print('Insertion failed with status code: ${response.statusCode}  ${response.stream.toString()}');
-      }
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  Future<void> _updateData(
-      String id, String name, String description, Uint8List image) async {
-
-    Map<String, String> header = {
-      'Authorization': ClientState().token,
-      'Content-Type': 'multipart/form-data;'
-    };
-    Map<String, String> body = {
-      'name': name,
-      'description': description
-    };
-    try {
-      Uri url = Uri.parse(BackEndConfig.updateCategoryString+id);
-      var request = http.MultipartRequest('PUT', url);
-      if (image.isNotEmpty) {
-        List<int> data = image.cast();
-        request.files.add(http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
-      }
-      request.headers.addAll(header);
-      request.fields['request'] = jsonEncode(body).toString();
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        edited = false;
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const CategoryPage()));
-      } else {
-        print('Insertion failed with status code: ${response.statusCode}  ${response.stream.toString()}');
-      }
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -180,11 +99,16 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                         Padding(
                           padding: const EdgeInsets.all(10),
                           child: TextButton(
-                            onPressed: () {
-                             setState(() {
-                               edited = true;
-                               _pickImage();
-                             });
+                            onPressed: () async {
+                              final image = await imagePicker(PickSource.gallery);
+                              setState(() {
+                                if (image != null) {
+                                  webImage = image;
+                                  this.image = Image.memory(webImage, fit: BoxFit.fill);
+                                } else {
+                                  this.image = const Center(child: Text('Image picking failed!'));
+                                }
+                              });
                             },
                             style: ButtonStyle(
                                 backgroundColor:
@@ -202,21 +126,25 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
                           decoration: BoxDecoration(
                             border: Border.all(),
                           ),
-                          child: updateMode && !edited && widget.category?.imageUrl != null? Image.network(BackEndConfig.fetchImageString+widget.category!.imageUrl!):
-                          webImage.isNotEmpty
-                              ? Image.memory(
-                            webImage,
-                            fit: BoxFit.fill,
-                          ) : const Center(child: Text('No Image selected')),
+                          child: image,
                         )
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: TextButton(
-                        onPressed: () {
-                         updateMode? _updateData(widget.category!.id, categoryName.text,categoryDescription.text,webImage):
-                          _insertData(categoryId.text, categoryName.text, categoryDescription.text, webImage);
+                        onPressed: () async {
+                          bool result = false;
+                          if (updateMode) {
+                            result = await Category.update(widget.category!.id, categoryName.text,
+                                categoryDescription.text, webImage);
+                          } else {
+                            result = await Category.insert(categoryId.text, categoryName.text,
+                                categoryDescription.text, webImage);
+                          }
+                          if (result) {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const CategoryPage()));
+                          }
                         },
                         style: ButtonStyle(
                             backgroundColor:

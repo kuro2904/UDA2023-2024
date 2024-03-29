@@ -1,12 +1,7 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/delivery_man.dart';
 
 import 'package:food_app/screens/admin/delivery_men_management/add_update_delivery_man.dart';
-import 'package:http/http.dart' as http;
 
 import 'delivery_man_box_list.dart';
 
@@ -24,7 +19,7 @@ class DeliveryManManagementState extends State<DeliveryMenPage> {
   @override
   void initState() {
     super.initState();
-    _futureDeliveryMen = fetchAllDeliveryMen();
+    _futureDeliveryMen = DeliveryMan.fetchAll();
   }
 
   @override
@@ -87,19 +82,4 @@ class DeliveryManManagementState extends State<DeliveryMenPage> {
     );
   }
 
-}
-
-List<DeliveryMan> parseDeliveryMan(String responseBody){
-  final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
-  return parser.map<DeliveryMan>((json) => DeliveryMan.fromJson(json)).toList();
-}
-
-Future<List<DeliveryMan>> fetchAllDeliveryMen() async{
-  final response = await http.get(Uri.parse(BackEndConfig.fetchAllDeliveryMenString));
-  if(response.statusCode == 200){
-    return parseDeliveryMan(response.body);
-  }
-  else{
-    throw Exception('Unable to fetch all Category');
-  }
 }
