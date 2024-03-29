@@ -28,14 +28,6 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    discountId.dispose();
-    discountPercent.dispose();
-    discountStartDate.dispose();
-    discountExpiredDate.dispose();
-    super.dispose();
-  }
 
   Future<void> performInsert(String id, int discountPercent, String startDate,
       String expiredDate) async {

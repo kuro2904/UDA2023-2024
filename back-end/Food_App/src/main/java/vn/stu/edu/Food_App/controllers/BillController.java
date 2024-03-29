@@ -29,4 +29,9 @@ public class BillController {
     public ResponseEntity<List<BillDTO>> getAll(){
         return ResponseEntity.ok(service.getAllOrder());
     }
+
+    @GetMapping("user/{email}")
+    public ResponseEntity<List<BillDTO>> getUserHistory(@PathVariable String email){
+        return ResponseEntity.ok(service.getHistoryOrder(email));
+    }
 }

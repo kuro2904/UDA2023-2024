@@ -69,7 +69,6 @@ class HomePageState extends State<HomePage> {
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return [
             SliverAppBar(
-              expandedHeight: 200.0,
               floating: false,
               pinned: true,
               flexibleSpace: FlexibleSpaceBar(
@@ -145,9 +144,8 @@ class HomePageState extends State<HomePage> {
                         backgroundColor: Colors.white,
                         textColor: Colors.black,
                         onTap: () {
-                          setState(() {
-                            futureProducts = ClientState().getProductByCategory(e.id);
-                          });
+                          futureProducts = ClientState().getProductByCategory(e.id);
+                          setState(() {}); // Call setState here
                         },
                       );
                     }).toList(),

@@ -35,12 +35,6 @@ class AddOrUpdateDeliveryManState extends State<AddOrUpdateDeliveryManPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    deliveryManId.dispose();
-    deliveryManName.dispose();
-    super.dispose();
-  }
 
   Future<void> performInsert(String id, String name) async {
     Map<String,String> body = {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/data/client_state.dart';
+import 'package:food_app/screens/android/history_order.dart';
 import 'package:food_app/screens/android/home_components/item_container.dart';
 import 'package:food_app/screens/android/login.dart';
 
@@ -33,7 +34,7 @@ class UserOptions extends StatelessWidget {
               padding: const EdgeInsets.all(8),
               child: ItemContainer(
                 onTap: () {
-                  // TODO: đến danh sách hóa đơn
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HistoryOrderPage(),));
                 },
                 height: 50,
                 children: const [

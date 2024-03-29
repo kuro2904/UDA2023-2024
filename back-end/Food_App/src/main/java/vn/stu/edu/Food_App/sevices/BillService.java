@@ -7,4 +7,6 @@ import java.util.List;
 public interface BillService {
     BillDTO placeOrder(BillDTO order);
     List<BillDTO> getAllOrder();
+
+    List<BillDTO> getHistoryOrder(String email);
 }

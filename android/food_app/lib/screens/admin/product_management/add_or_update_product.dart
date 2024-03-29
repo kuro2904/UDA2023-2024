@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_app/data/product.dart';
 import 'package:food_app/screens/admin/product_management/product_management_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+
 import '../../../constants/backend_config.dart';
 import '../../../data/category.dart';
 import '../../../data/client_state.dart';
@@ -39,26 +39,18 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       productId.text = widget.product!.id.toString();
       productName.text = widget.product!.name.toString();
       productDescription.text = widget.product!.description.toString();
-      productPrice.text = widget.product!.price.toString().replaceAll('k VND', '');
+      productPrice.text =
+          widget.product!.price.toString().replaceAll('k VND', '');
       updateMode = true;
     }
     futureCategory = fetchAllCategories();
     super.initState();
   }
 
-  @override
-  void dispose() {
-    productId.dispose();
-    productName.dispose();
-    productDescription.dispose();
-    productPrice.dispose();
-    super.dispose();
-  }
-
-
-  Future<void> performInsert(String id, String name, String price, String description, Category? category,Uint8List image) async {
+  Future<void> performInsert(String id, String name, String price,
+      String description, Category? category, Uint8List image) async {
     Uri url = Uri.parse(BackEndConfig.insertProductString);
-    Map<String,String> header = {
+    Map<String, String> header = {
       'Authorization': ClientState().token,
       'Content-Type': 'multipart/form-data;'
     };
@@ -66,24 +58,26 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       'id': id,
       'name': name,
       'price': '${price}k VND',
-      'description':description,
+      'description': description,
     };
-    if(category != null){
+    if (category != null) {
       body['categoryId'] = category.id;
     }
-    var request = http.MultipartRequest('POST',url);
+    var request = http.MultipartRequest('POST', url);
     try {
       if (image.isNotEmpty) {
         List<int> data = webImage.cast();
-        request.files.add(http.MultipartFile.fromBytes('image', data,filename: 'asd.jpg'));
+        request.files.add(
+            http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
       }
       request.headers.addAll(header);
       request.fields['request'] = jsonEncode(body).toString();
+      print(request.toString());
       var response = await request.send();
       if (response.statusCode == 201) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const ProductPage()));
-      }else{
+      } else {
         print('Insertion failed with status code: ${response.statusCode}}');
       }
     } on Exception catch (e) {
@@ -91,25 +85,27 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
     }
   }
 
-  Future<void> performUpdate(String id, String name, String price, String description, Category? category,Uint8List image) async {
-    Uri url = Uri.parse(BackEndConfig.updateProductString+id);
-    Map<String,String> header = {
+  Future<void> performUpdate(String id, String name, String price,
+      String description, Category? category, Uint8List image) async {
+    Uri url = Uri.parse(BackEndConfig.updateProductString + id);
+    Map<String, String> header = {
       'Authorization': ClientState().token,
       'Content-Type': 'multipart/form-data;'
     };
     Map<String, String> body = {
       'name': name,
       'price': '${price}k VND',
-      'description':description,
+      'description': description,
     };
-    if(category != null){
+    if (category != null) {
       body['categoryId'] = category.id;
     }
-    var request = http.MultipartRequest('PUT',url);
+    var request = http.MultipartRequest('PUT', url);
     try {
       if (image.isNotEmpty) {
         List<int> data = image.cast();
-        request.files.add(http.MultipartFile.fromBytes('image', data,filename: 'asd.jpg'));
+        request.files.add(
+            http.MultipartFile.fromBytes('image', data, filename: 'asd.jpg'));
       }
       request.headers.addAll(header);
       request.fields['request'] = jsonEncode(body).toString();
@@ -117,8 +113,9 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       if (response.statusCode == 200) {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => const ProductPage()));
-      }else{
-        print('Update failed with status code: ${response.statusCode} ${response}');
+      } else {
+        print(
+            'Update failed with status code: ${response.statusCode} ${response}');
       }
     } on Exception catch (e) {
       print(e.toString());
@@ -139,180 +136,200 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          updateMode? 'Update Product' : 'Add Product',
+          updateMode ? 'Update Product' : 'Add Product',
           style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: Padding(
-              padding: const EdgeInsets.all(10),
-              child:  Column(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: TextField(
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Product Id (10 characters maximum)'),
-                                enabled: updateMode? false : true,
-                                controller: productId,
-                                maxLength: 10,
-                              )),
-                          Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: TextField(
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Product Name (30 characters maximum)'),
-                                controller: productName,
-                                maxLength: 30,
-                              )),
-                          Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: TextField(
-                                decoration: const InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    hintText: 'Product Description'),
-                                controller: productDescription,
-                                maxLength: 2555,
-                              )),
-                          Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: TextField(
-                                decoration: const InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'Product Price (10 characters maximum)',
-                                ),
-                                maxLength: 10,
-                                inputFormatters: [_onlyNumbersFormatter],
-                                controller: productPrice,
-                              )),
-                          const Padding(
-                            padding: EdgeInsets.all(20),
-                            child: Text(
-                              'Category: ',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ),
-                          FutureBuilder(
-                              future: futureCategory,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                    child: CircularProgressIndicator(),
-                                  );
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else if (snapshot.hasData &&
-                                    snapshot.data!.isEmpty) {
-                                  return const Text('No data available');
-                                } else {
-                                  chosenCategory = snapshot.data!.first;
-                                  return Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: SizedBox(
-                                      height: 50,
-                                      child: DropdownButton<Category>(
-                                        value: chosenCategory,
-                                        icon: const Icon(Icons.keyboard_arrow_down),
-                                        items: snapshot.data!.map((category) {
-                                          return DropdownMenuItem(value: category,child: Text(category.name),);
-                                        }).toList(),
-                                        style: const TextStyle(
-                                          color: Colors.black, // Text color
-                                          fontSize: 16, // Text size
-                                          fontWeight: FontWeight.bold, // Text weight
-                                        ),
-                                        dropdownColor: Colors.grey[200],
-                                        elevation: 8,
-                                        isExpanded: true,
-                                        onChanged: (Category? value) { setState(() {
-                                          chosenCategory = value!;
-                                        }); },
-                                      ),
-                                    ),
-                                  );
-                                }
-                              }),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(10),
-                                child: TextButton(
-                                  onPressed: (){
-                                    _pickImage();
-                                  },
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                      MaterialStateProperty.all<Color>(Colors.blue)),
-                                  child: const Text(
-                                    'Choose Image',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                ),
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Product Id (10 characters maximum)'),
+                        enabled: updateMode ? false : true,
+                        controller: productId,
+                        maxLength: 10,
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Product Name (30 characters maximum)'),
+                        controller: productName,
+                        maxLength: 30,
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Product Description'),
+                        controller: productDescription,
+                        maxLength: 2555,
+                      )),
+                  Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextField(
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: 'Product Price (10 characters maximum)',
+                        ),
+                        maxLength: 10,
+                        inputFormatters: [_onlyNumbersFormatter],
+                        controller: productPrice,
+                      )),
+                  const Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Text(
+                      'Category: ',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  FutureBuilder(
+                    future: futureCategory,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (snapshot.hasData && snapshot.data!.isEmpty) {
+                        return const Text('No data available');
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: SizedBox(
+                            height: 50,
+                            child: DropdownButton<Category>(
+                              value: chosenCategory,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              items: snapshot.data!.map((category) {
+                                return DropdownMenuItem(
+                                  value: category,
+                                  child: Text(category.name),
+                                );
+                              }).toList(),
+                              style: const TextStyle(
+                                color: Colors.black, // Text color
+                                fontSize: 16, // Text size
+                                fontWeight: FontWeight.bold, // Text weight
                               ),
-                              Container(
-                                width: 150,
-                                height: 150,
-                                decoration: BoxDecoration(
-                                  border: Border.all(),
-                                ),
-                                child: updateMode && !edited && widget.product?.imageUrl != null? Image.network(BackEndConfig.fetchImageString+widget.product!.imageUrl!):
-                                webImage.isNotEmpty
-                                    ? Image.memory(
-                                  webImage,
-                                  fit: BoxFit.fill,
-                                ) : const Center(child: Text('No Image selected')),
-                              )
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: TextButton(
-                              onPressed: () {
-                                updateMode? performUpdate(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage) :performInsert(productId.text, productName.text, productPrice.text, productDescription.text, chosenCategory, webImage);
+                              dropdownColor: Colors.grey[200],
+                              elevation: 8,
+                              isExpanded: true,
+                              onChanged: (Category? value) {
+                                setState(() {
+                                  chosenCategory = value;
+                                });
                               },
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                  MaterialStateProperty.all<Color>(Colors.blue)),
-                              child: Text(
-                                updateMode ? 'Update' : 'Add',
-                                style: const TextStyle(color: Colors.white),
-                              ),
                             ),
                           ),
-                        ],
+                        );
+                      }
+                    },
+                  ),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextButton(
+                          onPressed: () {
+                            _pickImage();
+                          },
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.blue)),
+                          child: const Text(
+                            'Choose Image',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                      Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                        ),
+                        child: updateMode &&
+                                !edited &&
+                                widget.product?.imageUrl != null
+                            ? Image.network(BackEndConfig.fetchImageString +
+                                widget.product!.imageUrl!)
+                            : webImage.isNotEmpty
+                                ? Image.memory(
+                                    webImage,
+                                    fit: BoxFit.fill,
+                                  )
+                                : const Center(
+                                    child: Text('No Image selected')),
+                      )
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: TextButton(
+                      onPressed: () {
+                        updateMode
+                            ? performUpdate(
+                                productId.text,
+                                productName.text,
+                                productPrice.text,
+                                productDescription.text,
+                                chosenCategory,
+                                webImage)
+                            : performInsert(
+                                productId.text,
+                                productName.text,
+                                productPrice.text,
+                                productDescription.text,
+                                chosenCategory,
+                                webImage);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue)),
+                      child: Text(
+                        updateMode ? 'Update' : 'Add',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
 
-List<Category> parseCategories(String responseBody){
+List<Category> parseCategories(String responseBody) {
   final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
   print(responseBody);
   return parser.map<Category>((json) => Category.fromJson(json)).toList();
 }
 
-Future<List<Category>> fetchAllCategories() async{
-  final response = await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString));
-  if(response.statusCode == 200){
+Future<List<Category>> fetchAllCategories() async {
+  final response =
+      await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString));
+  if (response.statusCode == 200) {
     return parseCategories(response.body);
-  }
-  else{
+  } else {
     throw Exception('Unable to fetch all Category');
   }
 }

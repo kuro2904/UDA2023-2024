@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class BillDTO {
     private String id;
-    private String user_id;
+    private String user_email;
     private String cus_phone;
     private String cus_address;
     private String createDate;
@@ -25,11 +25,22 @@ public class BillDTO {
     private String paymentMethod;
     private List<BillDetailDTO> details;
 
+    public BillDTO(String id, String email, String cus_phone, String cus_address, String createDate, String status, String paymentMethod, List<BillDetailDTO> details) {
+        this.id = id;
+        this.user_email = email;
+        this.cus_phone = cus_phone;
+        this.cus_address = cus_address;
+        this.createDate = createDate;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.details = details;
+    }
+
     @Override
     public String toString() {
         return "BillDTO{" +
                 "id='" + id + '\'' +
-                ", user_id='" + user_id + '\'' +
+                ", user_id='" + user_email + '\'' +
                 ", cus_phone='" + cus_phone + '\'' +
                 ", cus_address='" + cus_address + '\'' +
                 ", createDate='" + createDate + '\'' +

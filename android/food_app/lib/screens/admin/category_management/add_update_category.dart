@@ -39,14 +39,6 @@ class AddOrUpdateDiscountState extends State<AddOrUpdateCategoryPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    categoryId.dispose();
-    categoryName.dispose();
-    categoryDescription.dispose();
-    super.dispose();
-  }
-
   Future<void> _pickImage() async{
     final ImagePicker picker = ImagePicker();
     XFile? image = await picker.pickImage(source: ImageSource.gallery);

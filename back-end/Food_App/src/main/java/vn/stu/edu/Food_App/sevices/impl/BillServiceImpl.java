@@ -3,6 +3,9 @@ package vn.stu.edu.Food_App.sevices.impl;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.BillDTO;
+import vn.stu.edu.Food_App.dtos.BillDetailDTO;
+import vn.stu.edu.Food_App.dtos.DiscountDTO;
+import vn.stu.edu.Food_App.dtos.ProductDTO;
 import vn.stu.edu.Food_App.entities.*;
 import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.*;
@@ -62,9 +65,9 @@ public class BillServiceImpl implements BillService {
             details.add(billDetailRepository.save(billDetail));
         }
 
-        if(orderRequest.getUser_id() != null && !orderRequest.getUser_id().isBlank()){
-            User customer = userRepository.findById(orderRequest.getUser_id()).orElseThrow(
-                    () -> new ResourceNotFoundException("User","Id", orderRequest.getUser_id())
+        if(orderRequest.getUser_email() != null && !orderRequest.getUser_email().isBlank()){
+            User customer = userRepository.findById(orderRequest.getUser_email()).orElseThrow(
+                    () -> new ResourceNotFoundException("User","Id", orderRequest.getUser_email())
             );
             order.setUser(customer);
             order.setCus_address(customer.getAddress());
@@ -86,6 +89,38 @@ public class BillServiceImpl implements BillService {
 
     @Override
     public List<BillDTO> getAllOrder() {
-        return billRepository.findAll().stream().map(bill -> mapper.map(bill, BillDTO.class)).collect(Collectors.toList());
+        return billRepository.findAll().stream().map(bill -> new BillDTO(
+                bill.getId(),
+                bill.getUser() == null ? "Unknow" : bill.getUser().getId(),
+                bill.getCus_phone(),
+                bill.getCus_address(),
+                bill.getCreateDate(),
+                bill.getStatus().name(),
+                bill.getPaymentMethod().name(),
+                bill.getDetails().stream().map(details ->
+                        new BillDetailDTO(details.getQuantity(),
+                                details.getProducts().getId(),
+                                details.getTotal_price())).collect(Collectors.toList())
+        )).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BillDTO> getHistoryOrder(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User","Email", email)
+        );
+        return billRepository.findByUser(user).stream().map(bill -> new BillDTO(
+                bill.getId(),
+                bill.getUser() == null ? "Unknow" : bill.getUser().getId(),
+                bill.getCus_phone(),
+                bill.getCus_address(),
+                bill.getCreateDate(),
+                bill.getStatus().name(),
+                bill.getPaymentMethod().name(),
+                bill.getDetails().stream().map(details ->
+                        new BillDetailDTO(details.getQuantity(),
+                                details.getProducts().getId(),
+                                details.getTotal_price())).collect(Collectors.toList())
+        )).collect(Collectors.toList());
     }
 }

@@ -23,4 +23,5 @@ class BackEndConfig {
   static const String loginString ="http://$serverAddr/api/auth/login";
   static const String signUpAdminString = "http://$serverAddr/api/auth/super-user/register";
   static const String placeOrderString = "http://$serverAddr/api/orders";
+  static const String fetchHistoryOrder = "http://$serverAddr/api/orders/user/";
 }
