@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,4 +16,12 @@ public class BillDetailDTO {
     private String productId;
     private String total_price;
 
+    @Override
+    public String toString() {
+        return "BillDetailDTO{" +
+                "quantity=" + quantity +
+                ", productId='" + productId + '\'' +
+                ", total_price='" + total_price + '\'' +
+                '}';
+    }
 }

@@ -47,19 +47,7 @@ class DashboardPage extends StatelessWidget {
               Icons.discount,
               'Discount',
               const DiscountPage(),
-            ),
-            _buildDashboardItem(
-              context,
-              Icons.verified_user,
-              'User',
-              Container(), // Replace with the user management page
-            ),
-            _buildDashboardItem(
-              context,
-              Icons.menu_book_outlined,
-              'Bills',
-              Container(), // Replace with the billing page
-            ),
+            )
           ],
         ),
       ),

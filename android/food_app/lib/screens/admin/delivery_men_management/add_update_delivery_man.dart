@@ -28,12 +28,6 @@ class AddOrUpdateDeliveryManState extends State<AddOrUpdateDeliveryManPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    deliveryManId.dispose();
-    deliveryManName.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

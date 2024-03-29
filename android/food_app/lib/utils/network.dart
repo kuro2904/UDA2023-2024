@@ -57,9 +57,15 @@ Future<http.Response> putJsonRequest(String uri, Map<String, String> header, Map
 ///
 ///   2. **<span style="color: yellow">[headers]</span>** headers
 ///
+///   3. **<span style="color: yellow">[query]</span>** get query
+///
 /// return server response without any error catcher
-Future<http.Response> getRequest(String uri, {Map<String, String>? headers}) {
-  return http.get(Uri.parse(uri), headers: headers);
+Future<http.Response> getRequest(String uri, {Map<String, String>? headers, Map<String, String>? query}) {
+  Uri requestUri = Uri.parse(uri);
+  if (query != null) {
+    requestUri = requestUri.replace(queryParameters: query);
+  }
+  return http.get(requestUri, headers: headers);
 }
 
 /// ## Delete request

@@ -65,9 +65,13 @@ class ClientState { // Singleton
     return false;
   }
 
-  bool logout() {
+  /// clearCart is optional for clearing cart on logout
+  bool logout({ bool clearCart = false }) {
     if (isLogin) {
-      isLogin = false;
+      isLogin = false; // set current state to not log in
+      if (clearCart) {
+        cart.clear();
+      }
       return true;
     }
     return false;

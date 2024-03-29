@@ -22,14 +22,6 @@ class AddOrUpdateProductState extends State<AddDiscountPage> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    discountId.dispose();
-    discountPercent.dispose();
-    discountStartDate.dispose();
-    discountExpiredDate.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -21,11 +21,17 @@ public class BillController {
 
     @PostMapping
     public ResponseEntity<BillDTO> placeOrder(@RequestBody BillDTO request){
+        System.out.println(request.toString());
         return new ResponseEntity<>(service.placeOrder(request), HttpStatus.CREATED);
     }
 
     @GetMapping
     public ResponseEntity<List<BillDTO>> getAll(){
         return ResponseEntity.ok(service.getAllOrder());
+    }
+
+    @GetMapping("user/{email}")
+    public ResponseEntity<List<BillDTO>> getUserHistory(@PathVariable String email){
+        return ResponseEntity.ok(service.getHistoryOrder(email));
     }
 }
