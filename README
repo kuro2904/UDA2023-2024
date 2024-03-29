@@ -1,2 +1,5 @@
 Back-end: spring 
 Font-end: Flutter
+
+Brand này để optimize theo mô hình 2 tier (Views - Models). Code chưa được DEBUG, chủ yếu là tái cấu trúc code
+
