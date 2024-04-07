@@ -1,5 +1,6 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.DeliverManDTO;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class DeliverManServiceImpl implements DeliverManService {
 
     private final ModelMapper mapper;
@@ -25,7 +27,6 @@ public class DeliverManServiceImpl implements DeliverManService {
     @Override
     public DeliverManDTO insertDeliveryMan(DeliverManDTO dto) {
         DeliverMan deliverMan = new DeliverMan();
-        deliverMan.setId(dto.getId());
         deliverMan.setName(dto.getName());
         return mapper.map(deliverManRepository.save(deliverMan),DeliverManDTO.class);
     }

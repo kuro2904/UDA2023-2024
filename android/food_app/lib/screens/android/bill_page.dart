@@ -27,23 +27,27 @@ class BillState extends State<Bill> {
     futureDiscount = fetchAllDiscounts();
     super.initState();
   }
-  
-  performPlaceOrder(String cusPhone, String cusAddress, PaymentMethod paymentMethod, Discount? discount) async{
+
+  performPlaceOrder(String cusPhone, String cusAddress,
+      PaymentMethod paymentMethod, Discount? discount) async {
     Uri url = Uri.parse(BackEndConfig.placeOrderString);
     Map<String, dynamic> body = {
       'cus_phone': cusPhone,
       'cus_address': cusAddress,
+      'user_email': ClientState().userName,
       'paymentMethod': paymentMethod.name,
       'discountId': discount?.id.toString(),
       'createDate': DateTime.now().toString(),
       'status': 'REQUEST',
       'details': ClientState().cart
     };
-    var response = await http.post(url,headers: ClientState().header,body: jsonEncode(body));
-    if(response.statusCode == 201){
+    var response = await http.post(url,
+        headers: ClientState().header, body: jsonEncode(body));
+    if (response.statusCode == 201) {
       Navigator.pop(context);
-      showAlertDialog(context, 'Bill total: \n${response.body}', 'Place Order Successful!');
-    }else{
+      showAlertDialog(
+          context, 'Bill total: \n${response.body}', 'Place Order Successful!');
+    } else {
       Navigator.pop(context);
       showAlertDialog(context, 'Status code: ${response.statusCode}', 'Error!');
     }
@@ -92,7 +96,11 @@ class BillState extends State<Bill> {
                   items: PaymentMethod.values.map((paymentMethod) {
                     return DropdownMenuItem(
                       value: paymentMethod,
-                      child: Center(child: Text(paymentMethod.name,),),
+                      child: Center(
+                        child: Text(
+                          paymentMethod.name,
+                        ),
+                      ),
                     );
                   }).toList(),
                   style: const TextStyle(
@@ -114,15 +122,13 @@ class BillState extends State<Bill> {
             FutureBuilder(
                 future: futureDiscount,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState ==
-                      ConnectionState.waiting) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
-                  } else if (snapshot.hasData &&
-                      snapshot.data!.isEmpty) {
+                  } else if (snapshot.hasData && snapshot.data!.isEmpty) {
                     return const Text('No Discount available');
                   } else {
                     selectedDiscount = snapshot.data!.first;
@@ -134,7 +140,10 @@ class BillState extends State<Bill> {
                           value: selectedDiscount,
                           icon: const Icon(Icons.keyboard_arrow_down),
                           items: snapshot.data!.map((discount) {
-                            return DropdownMenuItem(value: discount,child: Text(discount.id),);
+                            return DropdownMenuItem(
+                              value: discount,
+                              child: Text(discount.id),
+                            );
                           }).toList(),
                           style: const TextStyle(
                             color: Colors.black, // Text color
@@ -144,9 +153,11 @@ class BillState extends State<Bill> {
                           dropdownColor: Colors.grey[200],
                           elevation: 8,
                           isExpanded: true,
-                          onChanged: (Discount? value) { setState(() {
-                            selectedDiscount = value!;
-                          }); },
+                          onChanged: (Discount? value) {
+                            setState(() {
+                              selectedDiscount = value!;
+                            });
+                          },
                         ),
                       ),
                     );
@@ -158,18 +169,30 @@ class BillState extends State<Bill> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                TextButton(onPressed: (){
-                  Navigator.pop(context);
-                }, style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue)
-                ),
-                    child: const Text('Cancel!', style: TextStyle(color: Colors.white),)),
-                TextButton(onPressed: (){
-                  performPlaceOrder(cusPhoneController.text, cusAddressController.text, paymentMethod,selectedDiscount);
-                }, style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue)
-                ),
-                    child: const Text('Place Order!', style: TextStyle(color: Colors.white))),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.blue)),
+                    child: const Text(
+                      'Cancel!',
+                      style: TextStyle(color: Colors.white),
+                    )),
+                TextButton(
+                    onPressed: () {
+                      performPlaceOrder(
+                          cusPhoneController.text,
+                          cusAddressController.text,
+                          paymentMethod,
+                          selectedDiscount);
+                    },
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.blue)),
+                    child: const Text('Place Order!',
+                        style: TextStyle(color: Colors.white))),
               ],
             )
           ],
@@ -186,7 +209,7 @@ List<Discount> parseAllDiscount(String responseBody) {
 
 Future<List<Discount>> fetchAllDiscounts() async {
   final response =
-  await http.get(Uri.parse(BackEndConfig.fetchAllDiscountString));
+      await http.get(Uri.parse(BackEndConfig.fetchAllDiscountString));
   if (response.statusCode == 200) {
     return parseAllDiscount(response.body);
   } else {

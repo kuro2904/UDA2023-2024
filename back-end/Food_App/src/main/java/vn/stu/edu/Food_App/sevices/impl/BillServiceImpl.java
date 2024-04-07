@@ -1,23 +1,21 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.BillDTO;
 import vn.stu.edu.Food_App.dtos.BillDetailDTO;
-import vn.stu.edu.Food_App.dtos.DiscountDTO;
-import vn.stu.edu.Food_App.dtos.ProductDTO;
 import vn.stu.edu.Food_App.entities.*;
 import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.*;
 import vn.stu.edu.Food_App.sevices.BillService;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class BillServiceImpl implements BillService {
 
     private final BillRepository billRepository;
@@ -60,14 +58,14 @@ public class BillServiceImpl implements BillService {
             );
             BillDetail billDetail = new BillDetail();
             billDetail.setQuantity(products.getQuantity());
-            billDetail.setProducts(product);
+            billDetail.setProduct(product);
             billDetail.setTotal_price(billDetail.getTotal_price());
             details.add(billDetailRepository.save(billDetail));
         }
 
         if(orderRequest.getUser_email() != null && !orderRequest.getUser_email().isBlank()){
-            User customer = userRepository.findById(orderRequest.getUser_email()).orElseThrow(
-                    () -> new ResourceNotFoundException("User","Id", orderRequest.getUser_email())
+            User customer = userRepository.findByEmail(orderRequest.getUser_email()).orElseThrow(
+                    () -> new ResourceNotFoundException("User","Email", orderRequest.getUser_email())
             );
             order.setUser(customer);
             order.setCus_address(customer.getAddress());
@@ -76,8 +74,7 @@ public class BillServiceImpl implements BillService {
             order.setCus_phone(orderRequest.getCus_phone());
             order.setCus_address(orderRequest.getCus_address());
         }
-        if(deliverMan != null ) order.getDeliverMen().add(deliverMan);
-        order.setId(UUID.randomUUID().toString());
+        if(deliverMan != null ) order.setDeliverMan(deliverMan);
         if(discount != null) order.getDiscounts().add(discount);
         order.setPaymentMethod(PaymentMethod.valueOf(orderRequest.getPaymentMethod()));
         order.setCreateDate(orderRequest.getCreateDate());
@@ -99,7 +96,7 @@ public class BillServiceImpl implements BillService {
                 bill.getPaymentMethod().name(),
                 bill.getDetails().stream().map(details ->
                         new BillDetailDTO(details.getQuantity(),
-                                details.getProducts().getId(),
+                                details.getProduct().getId(),
                                 details.getTotal_price())).collect(Collectors.toList())
         )).collect(Collectors.toList());
     }
@@ -109,7 +106,8 @@ public class BillServiceImpl implements BillService {
         User user = userRepository.findByEmail(email).orElseThrow(
                 () -> new ResourceNotFoundException("User","Email", email)
         );
-        return billRepository.findByUser(user).stream().map(bill -> new BillDTO(
+        return billRepository.findByUser(user).stream().map(bill ->
+                new BillDTO(
                 bill.getId(),
                 bill.getUser() == null ? "Unknow" : bill.getUser().getId(),
                 bill.getCus_phone(),
@@ -119,7 +117,7 @@ public class BillServiceImpl implements BillService {
                 bill.getPaymentMethod().name(),
                 bill.getDetails().stream().map(details ->
                         new BillDetailDTO(details.getQuantity(),
-                                details.getProducts().getId(),
+                                details.getProduct().getId(),
                                 details.getTotal_price())).collect(Collectors.toList())
         )).collect(Collectors.toList());
     }

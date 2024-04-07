@@ -41,9 +41,10 @@ ThemeData lightMode = ThemeData(
       backgroundColor: MaterialStateProperty.all<Color>(
         lightColorScheme.primary, // Slightly darker shade for the button
       ),
-      foregroundColor:
-          MaterialStateProperty.all<Color>(Colors.white), // text color
-      elevation: MaterialStateProperty.all<double>(5.0), // shadow
+      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      // text color
+      elevation: MaterialStateProperty.all<double>(5.0),
+      // shadow
       padding: MaterialStateProperty.all<EdgeInsets>(
           const EdgeInsets.symmetric(horizontal: 20, vertical: 18)),
       shape: MaterialStateProperty.all<RoundedRectangleBorder>(

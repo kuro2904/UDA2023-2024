@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/screens/admin/category_management/add_update_category.dart';
@@ -13,11 +12,10 @@ class CategoryPage extends StatefulWidget {
   const CategoryPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => CategoryManagementState();
+  State<StatefulWidget> createState() => _CategoryPageState();
 }
 
-class CategoryManagementState extends State<CategoryPage> {
-
+class _CategoryPageState extends State<CategoryPage> {
   late Future<List<Category>> _futureCategories;
 
   @override
@@ -32,53 +30,47 @@ class CategoryManagementState extends State<CategoryPage> {
       appBar: AppBar(
         title: const Text(
           'Category',
-          style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const AddOrUpdateCategoryPage()),
+          );
+        },
+        child: const Icon(Icons.add),
+        backgroundColor: Colors.blue,
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'All Category',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddOrUpdateCategoryPage()));
-                    },
-                    style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue)),
-                    child: const Text(
-                      'Add new',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ),
-                )
-              ],
+            Text(
+              'All Categories',
+              style: Theme.of(context).textTheme.headline6,
+              textAlign: TextAlign.center,
             ),
-            FutureBuilder(
-              future: _futureCategories,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData && snapshot.data != null) {
-                  return CategoryBoxList(snapshot.data??[]);
-                } else {
-                  return const Center(child: Text('No data available'));
-                }
-              },
+            const SizedBox(height: 10),
+            Expanded(
+              child: FutureBuilder<List<Category>>(
+                future: _futureCategories,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData && snapshot.data != null) {
+                    return CategoryBoxList(snapshot.data!);
+                  } else {
+                    return const Center(child: Text('No data available'));
+                  }
+                },
+              ),
             ),
           ],
         ),
@@ -87,18 +79,18 @@ class CategoryManagementState extends State<CategoryPage> {
   }
 }
 
-List<Category> parseCategories(String responseBody){
+List<Category> parseCategories(String responseBody) {
   final parser = json.decode(responseBody).cast<Map<String, dynamic>>();
   print(responseBody);
   return parser.map<Category>((json) => Category.fromJson(json)).toList();
 }
 
-Future<List<Category>> fetchAllCategories() async{
-  final response = await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString));
-  if(response.statusCode == 200){
+Future<List<Category>> fetchAllCategories() async {
+  final response =
+      await http.get(Uri.parse(BackEndConfig.fetchAllCategoryString));
+  if (response.statusCode == 200) {
     return parseCategories(response.body);
-  }
-  else{
-    throw Exception('Unable to fetch all Category');
+  } else {
+    throw Exception('Unable to fetch all categories');
   }
 }

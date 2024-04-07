@@ -1,5 +1,6 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService  {
 
     private final ProductRepository productRepository;
@@ -50,7 +52,6 @@ public class ProductServiceImpl implements ProductService  {
     public ProductDTO insertProduct(ProductDTO productDTO, MultipartFile image) throws IOException {
 
         Product product = new Product();
-        product.setId(productDTO.getId());
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
         product.setDescription(productDTO.getDescription());

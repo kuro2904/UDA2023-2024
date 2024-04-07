@@ -3,9 +3,9 @@ import 'package:food_app/constants/backend_config.dart';
 
 import '../../../../data/category.dart';
 
-class CategoryItem extends StatelessWidget{
+class CategoryItem extends StatelessWidget {
   const CategoryItem({
-    super.key,
+    Key? key,
     required this.category,
     this.width = 150,
     this.height = 150,
@@ -13,7 +13,7 @@ class CategoryItem extends StatelessWidget{
     this.textColor = Colors.white,
     this.decoration,
     this.onTap,
-  });
+  }) : super(key: key);
 
   final Category category;
   final double width, height;
@@ -24,14 +24,15 @@ class CategoryItem extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // NOTE: allow manipulate click action for each item instead of whole menu
+      onTap: onTap,
       child: Container(
         width: width,
         height: height,
-        decoration: decoration ?? BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+        decoration: decoration ??
+            BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -40,7 +41,7 @@ class CategoryItem extends StatelessWidget{
               width: width * 0.7,
               height: height * 0.7,
             ),
-            SizedBox(height: height / 20,),
+            SizedBox(height: height / 20), // Add space between image and text
             Text(
               category.name,
               style: TextStyle(
@@ -53,5 +54,4 @@ class CategoryItem extends StatelessWidget{
       ),
     );
   }
-
 }

@@ -11,7 +11,8 @@ class Product {
       {required this.id,
       required this.name,
       required this.price,
-      required this.description, this.imageUrl});
+      required this.description,
+      this.imageUrl});
 
   factory Product.fromJson(Map<String, dynamic> data) {
     return switch (data) {
@@ -20,14 +21,14 @@ class Product {
         'name': String name,
         'price': String price,
         'description': String description,
-
       } =>
         Product(
             id: id,
             name: name,
             price: price,
             description: description,
-            imageUrl: data['imageUrl'] != null ? data['imageUrl'].toString() : ''),
+            imageUrl:
+                data['imageUrl'] != null ? data['imageUrl'].toString() : ''),
       _ => throw const FormatException('Failed to load Product'),
     };
   }

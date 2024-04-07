@@ -1,5 +1,6 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.DiscountDTO;
@@ -7,13 +8,11 @@ import vn.stu.edu.Food_App.entities.Discount;
 import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.DiscountRepository;
 import vn.stu.edu.Food_App.sevices.DiscountService;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class DiscountServiceImpl implements DiscountService {
 
     private final ModelMapper mapper;
@@ -27,7 +26,7 @@ public class DiscountServiceImpl implements DiscountService {
     @Override
     public DiscountDTO insertDiscount(DiscountDTO dto) {
         Discount discount = new Discount();
-        discount.setId(dto.getId());
+        discount.setName(dto.getName());
         discount.setDiscount_percent(dto.getDiscount_percent());
         discount.setStart_date(dto.getStart_date());
         discount.setExpire_date(dto.getExpire_date());

@@ -1,69 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/screens/android/bill_page.dart';
+
 import '../../data/OrderDetail.dart';
 import 'cart_components/cart_item.dart';
 
 class CartPage extends StatefulWidget {
-  List<OrderDetail> orderDetails;
-
-  CartPage({super.key, required this.orderDetails});
+  const CartPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => CartPageState();
+  State<CartPage> createState() => CartPageState();
 }
 
 class CartPageState extends State<CartPage> {
-
+  final List<OrderDetail> orderDetails = ClientState().cart;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+      appBar: AppBar(
+        title: const Text('Cart'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           Expanded(
-              child: ListView.builder(
-                  itemCount: widget.orderDetails.length,
-                  itemBuilder: (context, index) {
-                    return CartItem(
-                      item: widget.orderDetails[index],
-                    );
-                  })),
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  ClientState().cart.clear();
-                });
+            child: ListView.builder(
+              itemCount: orderDetails.length,
+              itemBuilder: (context, index) {
+                return CartItem(
+                  orderDetail: orderDetails[index],
+                );
               },
-              style: ButtonStyle(
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(40))),
-                  backgroundColor: MaterialStateProperty.all(Colors.blue)),
-              child: const Text(
-                'Clear Cart',
-                style: TextStyle(color: Colors.white),
-              ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const Bill()));
-              },
-              style: ButtonStyle(
-                shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(40))),
-                backgroundColor: MaterialStateProperty.all(Colors.blue),
-              ),
-              child: const Text('Place Order',
-                  style: TextStyle(color: Colors.white)),
-            )
-          ])
-                ],
-              ),
-        ));
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      ClientState().cart.clear();
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    'Clear Cart',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Bill()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    'Place Order',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
-

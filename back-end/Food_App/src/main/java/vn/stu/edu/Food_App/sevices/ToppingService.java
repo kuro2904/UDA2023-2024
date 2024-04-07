@@ -1,2 +1,15 @@
-package vn.stu.edu.Food_App.sevices;public interface ToppingService {
+package vn.stu.edu.Food_App.sevices;
+
+import vn.stu.edu.Food_App.dtos.ToppingDTO;
+import vn.stu.edu.Food_App.entities.Product;
+
+import java.util.List;
+
+public interface ToppingService {
+    List<ToppingDTO> getAll();
+    ToppingDTO getById(int id);
+    ToppingDTO insert(ToppingDTO request);
+    ToppingDTO update(int id, ToppingDTO request);
+    String delete(int id);
+    List<ToppingDTO> getByProduct(String productId);
 }

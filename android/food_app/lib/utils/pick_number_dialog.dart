@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 class PickNumberDialog extends StatefulWidget {
   final TextEditingController controller;
   final int initialQuantity;
-  final Function(int) onQuantityChanged; // Callback to notify the parent widget about quantity changes
+  final Function(int)
+      onQuantityChanged; // Callback to notify the parent widget about quantity changes
   final VoidCallback function;
 
   PickNumberDialog({

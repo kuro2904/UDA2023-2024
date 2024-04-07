@@ -1,36 +1,41 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/delivery_man.dart';
 import 'package:http/http.dart' as http;
-import '../../../constants/backend_config.dart';
-import 'add_update_delivery_man.dart';
 
+import '../../../constants/backend_config.dart';
+import '../../../data/client_state.dart';
+import 'add_update_delivery_man.dart';
 
 class DeliveryMenBoxList extends StatefulWidget {
   final List<DeliveryMan> items;
 
-  const DeliveryMenBoxList(this.items, {super.key});
+  const DeliveryMenBoxList(this.items, {Key? key});
 
   @override
-  State<StatefulWidget> createState() => CategoryBoxState();
+  State<StatefulWidget> createState() => DeliveryMenBoxListState();
 }
 
-class CategoryBoxState extends State<DeliveryMenBoxList> {
-
+class DeliveryMenBoxListState extends State<DeliveryMenBoxList> {
   Future<void> deleteDeliveryMan(DeliveryMan item) async {
-    final response = await http.delete(Uri.parse(BackEndConfig.deleteDeliveryManString + item.id),headers: ClientState().headerWithAuth);
+    final Map<String, String> header = {
+      'Authorization': ClientState().token,
+      'Content-Type': 'application/json'
+    };
+    final response = await http.delete(
+      Uri.parse(BackEndConfig.deleteDeliveryManString + item.id),
+      headers: header,
+    );
     if (response.statusCode == 200) {
       setState(() {
         widget.items.remove(item);
       });
     } else {
       showDialog(
-        context: context, // Use the stored context
+        context: context,
         builder: (context) => AlertDialog(
           title: const Text('Error'),
-          content: const Text('Failed to delete category. Please try again later.'),
+          content: const Text(
+              'Failed to delete delivery man. Please try again later.'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -42,78 +47,53 @@ class CategoryBoxState extends State<DeliveryMenBoxList> {
     }
   }
 
-
-
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
+      child: ListView.separated(
         padding: const EdgeInsets.all(20),
         itemCount: widget.items.length,
+        separatorBuilder: (context, index) => const Divider(),
         itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-            padding: EdgeInsets.zero,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  widget.items[index].id,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+          final deliveryMan = widget.items[index];
+          return ListTile(
+            title: Text(
+              '${deliveryMan.id} - ${deliveryMan.name}',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            trailing: PopupMenuButton<int>(
+              itemBuilder: (context) => const [
+                PopupMenuItem(
+                  value: 1,
+                  child: Text('Show Details'),
                 ),
-                Text(
-                  widget.items[index].name,
-                  style: const TextStyle(fontWeight: FontWeight.w400),
+                PopupMenuItem(
+                  value: 2,
+                  child: Text('Update'),
                 ),
-                PopupMenuButton<int>(
-                  itemBuilder: (context) => [
-                    const PopupMenuItem(
-                      value: 1,
-                      child: Text('Show Details'),
-                    ),
-                    const PopupMenuItem(
-                      value: 2,
-                      child: Text('Update'),
-                    ),
-                    const PopupMenuItem(
-                      value: 3,
-                      child: Text('Delete'),
-                    ),
-                  ],
-                  onSelected: (value) async {
-                    final item = widget.items[index];
-                    try {
-                      if (value == 3) {
-                        deleteDeliveryMan(item); // Call the function directly
-                      } else if (value == 2) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>  AddOrUpdateDeliveryManPage(deliveryMan: item),
-                          ),
-                        );
-                      }
-                    } catch (error) {
-                      print('Error: $error');
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Error'),
-                          content: const Text('Failed to perform operation. Please try again later.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  child: const Icon(Icons.more_horiz),
+                PopupMenuItem(
+                  value: 3,
+                  child: Text('Delete'),
                 ),
               ],
+              onSelected: (value) async {
+                switch (value) {
+                  case 3:
+                    await deleteDeliveryMan(deliveryMan);
+                    break;
+                  case 2:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddOrUpdateDeliveryManPage(
+                            deliveryMan: deliveryMan),
+                      ),
+                    );
+                    break;
+                  default:
+                }
+              },
+              child: const Icon(Icons.more_horiz),
             ),
           );
         },
@@ -121,4 +101,3 @@ class CategoryBoxState extends State<DeliveryMenBoxList> {
     );
   }
 }
-

@@ -75,7 +75,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       print(request.toString());
       var response = await request.send();
       if (response.statusCode == 201) {
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const ProductPage()));
       } else {
         print('Insertion failed with status code: ${response.statusCode}}');
@@ -111,7 +111,7 @@ class AddOrUpdateProductState extends State<AddOrUpdateProductPage> {
       request.fields['request'] = jsonEncode(body).toString();
       var response = await request.send();
       if (response.statusCode == 200) {
-        Navigator.push(context,
+        Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (context) => const ProductPage()));
       } else {
         print(

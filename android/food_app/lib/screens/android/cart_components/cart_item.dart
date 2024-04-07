@@ -1,47 +1,72 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:food_app/constants/backend_config.dart';
-import 'package:food_app/data/OrderDetail.dart';
 
-class CartItem extends StatefulWidget {
-  final OrderDetail item;
+import '../../../data/OrderDetail.dart';
 
-  const CartItem({super.key, required this.item});
+class CartItem extends StatelessWidget {
+  final OrderDetail orderDetail;
 
-  @override
-  State<StatefulWidget> createState() => CartItemState();
-
-}
-class CartItemState extends State<CartItem>{
+  const CartItem({super.key, required this.orderDetail});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: CupertinoColors.black)
-      ),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: 100,
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 100,
-                width: 100,
-                child: widget.item.product.imageUrl == null
-                    ? const Text('No image')
-                    : Image.network(
-                    BackEndConfig.fetchImageString +  widget.item.product.imageUrl!, height: 90,width: 90,),
-              ),
-              Text( widget.item.product.name, style: const TextStyle(fontSize: 25),),
-              Text(widget.item.quantity.toString(), style: const TextStyle(fontSize: 25))
-
-            ],
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
           ),
-        ),
+        ],
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              BackEndConfig.fetchImageString + orderDetail.product.imageUrl!,
+              width: 80,
+              height: 80,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  orderDetail.product.name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '\$${orderDetail.product.price}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Quantity: ${orderDetail.quantity}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

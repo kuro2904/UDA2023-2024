@@ -1,6 +1,9 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import vn.stu.edu.Food_App.dtos.UserDTO;
 import vn.stu.edu.Food_App.entities.User;
 import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
@@ -9,28 +12,39 @@ import vn.stu.edu.Food_App.repositories.UserRepository;
 import vn.stu.edu.Food_App.sevices.UserService;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Service
+@Transactional
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
     private final ModelMapper mapper;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository,ModelMapper mapper) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, ModelMapper mapper) {
         this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
         this.mapper = mapper;
     }
 
     @Override
-    public UserDTO insertUser(UserDTO userDTO) {
-        return null;
-    }
-
-    @Override
-    public UserDTO updateUser(String id, UserDTO userDTO) {
-        return null;
+    public UserDTO updateUser(String email, UserDTO userDTO) {
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new ResourceNotFoundException("User", "Email", email)
+        );
+        if(userDTO.getAddress() != null && !userDTO.getAddress().isBlank()) user.setAddress(userDTO.getAddress());
+        if(userDTO.getEmail() != null && !userDTO.getEmail().isBlank()) user.setEmail(userDTO.getEmail());
+        if(userDTO.getPhoneNumber() != null && !userDTO.getPhoneNumber().isBlank()) user.setPhoneNumber(userDTO.getPhoneNumber());
+        if(userDTO.getPassword() != null && !userDTO.getPassword().isBlank()) user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        User rs = userRepository.save(user);
+        return new UserDTO(
+                rs.getId(),
+                rs.getEmail(),
+                rs.getPhoneNumber(),
+                rs.getAddress(),
+                rs.getRoles().stream().findFirst().get().getName(),
+                rs.getPassword()
+        );
     }
 
     @Override
@@ -50,19 +64,4 @@ public class UserServiceImpl implements UserService {
         ).collect(Collectors.toList());
     }
 
-    @Override
-    public UserDTO findStaffById(String id) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("User","Id", id)
-        );
-        return mapper.map(user,UserDTO.class);
-    }
-
-    @Override
-    public UserDTO findByStaffEmailOrPhone(String emailOrPhone) {
-//        Optional<User> user = userRepository.findByEmail(emailOrPhone);
-//        if (user.isEmpty()) user = userRepository.findByPhone(emailOrPhone);
-//        if(user.isEmpty()) throw  new RuntimeException("Cannot Found User By Email Or Phone: " + emailOrPhone);
-        return null;
-    }
 }

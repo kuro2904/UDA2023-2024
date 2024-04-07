@@ -10,9 +10,13 @@ class Order {
   final String paymentMethod;
   final List<OrderDetail> details = [];
 
-  Order(this.id, this.customerId, this.discount,
-      {required this.cusAddress,
-      required this.cusPhone,
-      required this.createDate,
-      required this.paymentMethod,});
+  Order(
+    this.id,
+    this.customerId,
+    this.discount, {
+    required this.cusAddress,
+    required this.cusPhone,
+    required this.createDate,
+    required this.paymentMethod,
+  });
 }

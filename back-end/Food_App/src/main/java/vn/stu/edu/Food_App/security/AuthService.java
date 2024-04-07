@@ -5,7 +5,7 @@ import vn.stu.edu.Food_App.dtos.auth.LoginDTO;
 import vn.stu.edu.Food_App.dtos.auth.RegisterDTO;
 
 public interface AuthService {
-    String login(LoginDTO dto);
+    UserDTO login(LoginDTO dto);
     UserDTO register(RegisterDTO dto);
     UserDTO registerAdmin(RegisterDTO dto);
     UserDTO createSuperUser(RegisterDTO dto);

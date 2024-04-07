@@ -2,8 +2,10 @@ package vn.stu.edu.Food_App.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.annotation.Validated;
 
 @Entity
@@ -11,16 +13,17 @@ import org.springframework.validation.annotation.Validated;
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
+@Builder
 @Table(name = "products")
 public class Product {
-    @Id
-    @Column(length = 10)
+    @Id @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false)
     private String name;
-    @Column(nullable = false,length = 10)
+    @Column(nullable = false)
     private String price;
-    @Column( nullable = false, length = 2555)
+    @Column( nullable = false)
     private String description;
     private String imageUrl;
     @ManyToOne

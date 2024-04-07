@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_app/screens/admin/category_management/category_management_page.dart';
 import 'package:food_app/screens/admin/delivery_men_management/delivery_men_management_page.dart';
 import 'package:food_app/screens/admin/discount_management/discount_management_page.dart';
 import 'package:food_app/screens/admin/product_management/product_management_page.dart';
-
-import 'category_management/category_management_page.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -55,35 +54,43 @@ class DashboardPage extends StatelessWidget {
   }
 
   Widget _buildDashboardItem(
-      BuildContext context,
-      IconData icon,
-      String label,
-      Widget destination,
-      ) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => destination));
+    BuildContext context,
+    IconData icon,
+    String label,
+    Widget destination,
+  ) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => destination),
+        );
       },
-      child: Card(
-        color: Colors.orangeAccent,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.orangeAccent,
         elevation: 5,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 40.0,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              label,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 40.0,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            label,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }

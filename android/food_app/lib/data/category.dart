@@ -7,7 +7,8 @@ class Category {
   Category(
       {required this.id,
       required this.name,
-      required this.description, this.imageUrl});
+      required this.description,
+      this.imageUrl});
 
   factory Category.fromJson(Map<String, dynamic> data) {
     return switch (data) {
@@ -17,13 +18,15 @@ class Category {
         'description': String description,
       } =>
         Category(
-            id: id, name: name, description: description, imageUrl: data['imageUrl'] != null ? data['imageUrl'].toString() : ''),
+            id: id,
+            name: name,
+            description: description,
+            imageUrl:
+                data['imageUrl'] != null ? data['imageUrl'].toString() : ''),
       _ => throw const FormatException('Failed to load Category')
     };
   }
-  Map<String,String> toJson() => {
-    'id':id,
-    'name':name,
-    'description':description
-  };
+
+  Map<String, String> toJson() =>
+      {'id': id, 'name': name, 'description': description};
 }

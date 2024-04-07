@@ -9,7 +9,6 @@ import 'package:food_app/screens/admin/discount_management/discount_box_list.dar
 import 'package:http/http.dart' as http;
 import '../../../data/discount.dart';
 
-
 class DiscountPage extends StatefulWidget {
   const DiscountPage({super.key});
 
@@ -53,11 +52,14 @@ class DiscountManagementState extends State<DiscountPage> {
                   padding: const EdgeInsets.only(right: 20),
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AddDiscountPage()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const AddDiscountPage()));
                     },
                     style: ButtonStyle(
                         backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue)),
+                            MaterialStateProperty.all<Color>(Colors.blue)),
                     child: const Text(
                       'Add new',
                       style: TextStyle(color: Colors.white, fontSize: 15),
@@ -94,7 +96,7 @@ List<Discount> parseAllDiscount(String responseBody) {
 
 Future<List<Discount>> fetchAllDiscounts() async {
   final response =
-  await http.get(Uri.parse(BackEndConfig.fetchAllDiscountString));
+      await http.get(Uri.parse(BackEndConfig.fetchAllDiscountString));
   if (response.statusCode == 200) {
     return parseAllDiscount(response.body);
   } else {

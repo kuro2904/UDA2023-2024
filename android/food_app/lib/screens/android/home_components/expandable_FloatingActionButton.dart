@@ -69,11 +69,8 @@ class ExpandableFabState extends State<ExpandableFab> {
       ignoring: _open,
       child: AnimatedContainer(
         transformAlignment: Alignment.center,
-        transform: Matrix4.diagonal3Values(
-            _open ? 0.7 : 1.0,
-            _open ? 0.7 : 1.0,
-            1.0
-        ),
+        transform:
+            Matrix4.diagonal3Values(_open ? 0.7 : 1.0, _open ? 0.7 : 1.0, 1.0),
         duration: const Duration(milliseconds: 250),
         curve: const Interval(0.25, 1.0, curve: Curves.easeOut),
         child: AnimatedOpacity(
@@ -104,7 +101,10 @@ class ExpandableFabState extends State<ExpandableFab> {
     double width = 8,
     double height = 8,
   }) {
-    final space = SizedBox(width: width, height: height,);
+    final space = SizedBox(
+      width: width,
+      height: height,
+    );
     return children.expand((element) => [element, space]).toList();
   }
 }

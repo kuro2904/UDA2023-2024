@@ -1,5 +1,6 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
@@ -35,7 +37,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public CategoryDTO insert(CategoryDTO categoryDTO, MultipartFile image) throws IOException {
         Category category = new Category();
-        category.setId(categoryDTO.getId());
         category.setName(categoryDTO.getName());
         category.setDescription(categoryDTO.getDescription());
         if(image != null && image.getSize() >0) category.setImageUrl(imageService.uploadImage(image));

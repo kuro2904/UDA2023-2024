@@ -1,5 +1,6 @@
 package vn.stu.edu.Food_App.sevices.impl;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class ImageServiceImpl implements ImageService {
     @Value("${project.images}")
     String path;

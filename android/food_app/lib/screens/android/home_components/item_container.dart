@@ -6,6 +6,7 @@ class ItemContainer extends StatelessWidget {
   final Decoration? decoration;
   final VoidCallback? onTap;
   final List<Widget> children;
+
   const ItemContainer({
     super.key,
     this.width = 150,
@@ -24,10 +25,11 @@ class ItemContainer extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        decoration: decoration ?? BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
+        decoration: decoration ??
+            BoxDecoration(
+              color: backgroundColor,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: children,

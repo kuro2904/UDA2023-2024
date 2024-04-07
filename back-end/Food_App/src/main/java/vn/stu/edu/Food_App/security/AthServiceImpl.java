@@ -1,5 +1,6 @@
 package vn.stu.edu.Food_App.security;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,13 +18,13 @@ import vn.stu.edu.Food_App.exceptions.FoodAppAPIException;
 import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.RoleRepository;
 import vn.stu.edu.Food_App.repositories.UserRepository;
-import vn.stu.edu.Food_App.security.AuthService;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class AthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
@@ -41,12 +42,16 @@ public class AthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginDTO dto) {
+    public UserDTO login(LoginDTO dto) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 dto.getEmail(),dto.getPassword()
         ));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return "Login Successfully";
+        UserDTO userDTO = new UserDTO();
+        userDTO.setEmail(authentication.getName());
+        userDTO.setPassword(dto.getPassword());
+        userDTO.setRole(authentication.getAuthorities().stream().findFirst().get().toString());
+        return userDTO;
     }
 
     @Override
@@ -66,7 +71,15 @@ public class AthServiceImpl implements AuthService {
         );
         roles.add(user_role);
         user.setRoles(roles);
-        return mapper.map(userRepository.save(user), UserDTO.class);
+        User savedUser = userRepository.save(user);
+        return new UserDTO(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getPhoneNumber(),
+                savedUser.getAddress(),
+                "ROLE_CUSTOMER",
+                savedUser.getPassword()
+        );
     }
 
     @Override
@@ -86,7 +99,15 @@ public class AthServiceImpl implements AuthService {
         );
         roles.add(user_role);
         user.setRoles(roles);
-        return mapper.map(userRepository.save(user), UserDTO.class);
+        User savedUser = userRepository.save(user);
+        return new UserDTO(
+                savedUser.getId(),
+                savedUser.getEmail(),
+                savedUser.getPhoneNumber(),
+                savedUser.getAddress(),
+                "ROLE_ADMIN",
+                savedUser.getPassword()
+        );
     }
 
     @Override

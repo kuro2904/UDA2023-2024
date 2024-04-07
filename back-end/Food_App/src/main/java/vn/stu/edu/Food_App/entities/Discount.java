@@ -3,8 +3,10 @@ package vn.stu.edu.Food_App.entities;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -14,10 +16,13 @@ import java.util.Set;
 @Entity
 @Data
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 public class Discount {
-    @Id
+    @Id @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
+    private String name;
     private long discount_percent;
     private String start_date;
     private String expire_date;

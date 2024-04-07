@@ -14,8 +14,8 @@ class OrderDetail {
   });
 
   Map toJson() => {
-    'quantity': quantity,
-    'productId': product.id,
-    'total_price': totalPrice
-  };
+        'quantity': quantity,
+        'productId': product.id,
+        'total_price': totalPrice
+      };
 }

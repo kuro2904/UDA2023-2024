@@ -1,3 +1,1 @@
-enum PaymentMethod {
-  COD,MASTERCARD,VISA
-}
+enum PaymentMethod { COD, MASTERCARD, VISA }

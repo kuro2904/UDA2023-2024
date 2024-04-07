@@ -25,7 +25,10 @@ class WrapListMenu extends StatelessWidget {
           Wrap(
             spacing: 8.0,
             runSpacing: 8.0,
-            children: children.map((e) => Container(margin: margin ?? const EdgeInsets.all(8), child: e)).toList(),
+            children: children
+                .map((e) => Container(
+                    margin: margin ?? const EdgeInsets.all(8), child: e))
+                .toList(),
           ),
         ],
       ),

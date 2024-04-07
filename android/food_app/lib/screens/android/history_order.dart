@@ -23,14 +23,13 @@ class HistoryOrderState extends State<HistoryOrderPage> {
   }
 
   Future<List<Order>> fetchAllOrder() async {
-    Map<String, String> query = {'userEmail': ClientState().userName};
-    Uri baseUrl =
-        Uri.parse(BackEndConfig.fetchHistoryOrder + ClientState().userName);
-    Uri url = baseUrl.replace(queryParameters: query);
-
-    final response = await http.get(url, headers: ClientState().header);
+    final response = await http.get(
+      Uri.parse(
+        BackEndConfig.fetchHistoryOrder + ClientState().userName,
+      ),
+      headers: ClientState().header,
+    );
     if (response.statusCode == 200) {
-      print(response.body);
       return parseAllOrder(response.body);
     } else {
       throw Exception('Unable to fetch History Order');
@@ -39,65 +38,74 @@ class HistoryOrderState extends State<HistoryOrderPage> {
 
   List<Order> parseAllOrder(String responseString) {
     final parser = jsonDecode(responseString).cast<Map<String, dynamic>>();
-    return parser
-        .map<Order>((json) => Order(
-            json['id'], json['user_email'], json['discountId'] ?? 'No discount',
-            cusAddress: json['cus_address'],
-            cusPhone: json['cus_phone'],
-            createDate: json['createDate'],
-            paymentMethod: json['paymentMethod']))
-        .toList();
+    return parser.map<Order>((json) {
+      return Order(
+        json['id'],
+        json['user_email'],
+        json['discountId'] ?? 'No discount',
+        cusAddress: json['cus_address'],
+        cusPhone: json['cus_phone'],
+        createDate: json['createDate'],
+        paymentMethod: json['paymentMethod'],
+      );
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
+      appBar: AppBar(
+        title: const Text('Order History'),
+      ),
+      body: FutureBuilder<List<Order>>(
         future: futureBill,
-        builder: (BuildContext context, AsyncSnapshot<List<Order>> snapshot) {
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error!: \n ${snapshot.error}'),
-            );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
+          } else if (snapshot.hasError) {
+            return Center(
+              child: Text('Error!: ${snapshot.error}'),
+            );
           } else if (snapshot.hasData && snapshot.data != null) {
-            List<Order> orders = snapshot.data!;
+            final orders = snapshot.data!;
             if (orders.isEmpty) {
               return const Center(
-                child: Text('No Data!'),
+                child: Text('No Orders'),
               );
             }
             return ListView.builder(
+              itemCount: orders.length,
               itemBuilder: (context, index) {
+                final order = orders[index];
                 return Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Container(
-                    decoration:
-                    BoxDecoration(border: Border.all(color: Colors.black)),
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Id: ${orders[index].id.replaceRange(20, orders[index].id.length, '...')}'),
-                        Text('Date ${orders[index].createDate}')
-                      ],
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Card(
+                    elevation: 3,
+                    child: ListTile(
+                      title: Text(
+                        'Order ID: ${order.id.replaceRange(20, order.id.length, '...')}',
+                      ),
+                      subtitle: Text('Date: ${order.createDate}'),
+                      onTap: () {
+                        // Implement onTap functionality
+                      },
                     ),
                   ),
                 );
               },
-              itemCount: orders.length,
             );
           } else {
             return const Center(
-              child: Text('No Data!'),
+              child: Text('No Data'),
             );
           }
         },
       ),
     );
   }
-
 }
