@@ -19,11 +19,9 @@ import java.util.List;
 public class Category {
     @Id @GeneratedValue(generator="system-uuid")
     @GenericGenerator(name="system-uuid", strategy = "uuid")
-    @Column(length = 10)
     private String id;
-    @Column(nullable = false,length = 30)
+    @Column(nullable = false)
     private String name;
-    @Column(length = 2550)
     private String description;
     private String imageUrl;
     @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
