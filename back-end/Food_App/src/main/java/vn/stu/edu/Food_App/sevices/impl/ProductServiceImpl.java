@@ -56,7 +56,6 @@ public class ProductServiceImpl implements ProductService  {
 
     @Override
     public ProductDTO insertProduct(ProductDTO productDTO, MultipartFile image) throws IOException {
-
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
@@ -71,7 +70,9 @@ public class ProductServiceImpl implements ProductService  {
         if(productDTO.getTopping() != null){
             List<Topping> list = new ArrayList<>();
             for(ToppingDTO toppingDTO : productDTO.getTopping()){
-                list.add(toppingRepository.save(new Topping(toppingDTO.getName())));
+                Topping topping =toppingRepository.save(new Topping(toppingDTO.getName()));
+                topping.setProduct(product);
+                list.add(topping);
             }
             product.setToppings(list);
         }

@@ -1,10 +1,7 @@
 package vn.stu.edu.Food_App.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.parameters.P;
 
 import java.util.HashSet;
@@ -15,7 +12,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-@Data
+@Setter
+@Getter
 public class BillDetail {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
