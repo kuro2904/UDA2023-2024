@@ -5,15 +5,19 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import vn.stu.edu.Food_App.dtos.ProductDTO;
+import vn.stu.edu.Food_App.dtos.ToppingDTO;
 import vn.stu.edu.Food_App.entities.Category;
 import vn.stu.edu.Food_App.entities.Product;
+import vn.stu.edu.Food_App.entities.Topping;
 import vn.stu.edu.Food_App.exceptions.ResourceNotFoundException;
 import vn.stu.edu.Food_App.repositories.CategoryRepository;
 import vn.stu.edu.Food_App.repositories.ProductRepository;
+import vn.stu.edu.Food_App.repositories.ToppingRepository;
 import vn.stu.edu.Food_App.sevices.ImageService;
 import vn.stu.edu.Food_App.sevices.ProductService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,12 +29,14 @@ public class ProductServiceImpl implements ProductService  {
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;
     private final ModelMapper mapper;
+    private final ToppingRepository toppingRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ImageService imageService, ModelMapper mapper) {
+    public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository, ImageService imageService, ModelMapper mapper, ToppingRepository toppingRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.imageService = imageService;
         this.mapper = mapper;
+        this.toppingRepository = toppingRepository;
     }
 
     @Override
@@ -62,7 +68,16 @@ public class ProductServiceImpl implements ProductService  {
             );
             product.setCategory(category);
         }
-        return mapper.map(productRepository.save(product), ProductDTO.class);
+        if(productDTO.getTopping() != null){
+            List<Topping> list = new ArrayList<>();
+            for(ToppingDTO toppingDTO : productDTO.getTopping()){
+                list.add(toppingRepository.save(new Topping(toppingDTO.getName())));
+            }
+            product.setToppings(list);
+        }
+        Product product1 = productRepository.save(product);
+        System.out.println(product1.toString());
+        return new ProductDTO(product1);
     }
 
     @Override

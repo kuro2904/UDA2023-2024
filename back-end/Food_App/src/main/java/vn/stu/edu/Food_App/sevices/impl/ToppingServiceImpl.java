@@ -38,29 +38,7 @@ public class ToppingServiceImpl implements ToppingService {
         return new ToppingDTO(topping);
     }
 
-    @Override
-    public ToppingDTO insert(ToppingDTO request) {
-        Product product = productRepository.findById(request.getProduct().getId()).orElseThrow(
-                () -> new ResourceNotFoundException("Product", "Id", request.getProduct().getId())
-        );
-        Topping topping = new Topping();
-        topping.setName(request.getName());
-        topping.setProduct(product);
-        return new ToppingDTO(toppingRepository.save(topping));
-    }
 
-    @Override
-    public ToppingDTO update(int id, ToppingDTO request) {
-        Topping topping = toppingRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Topping", "Id", String.valueOf(id))
-        );
-        Product product = productRepository.findById(request.getProduct().getId()).orElseThrow(
-                () -> new ResourceNotFoundException("Product", "Id", request.getProduct().getId())
-        );
-        if (request.getName() != null && !request.getName().isBlank()) topping.setName(request.getName());
-        if (request.getProduct() != null) topping.setProduct(product);
-        return new ToppingDTO(toppingRepository.save(topping));
-    }
 
     @Override
     public String delete(int id) {

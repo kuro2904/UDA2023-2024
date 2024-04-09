@@ -32,15 +32,6 @@ public class ToppingController {
         return ResponseEntity.ok(toppingService.getByProduct(productId));
     }
 
-    @PostMapping
-    public ResponseEntity<ToppingDTO> insert(@RequestBody ToppingDTO request){
-        return new ResponseEntity<>(toppingService.insert(request), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ToppingDTO> edit(@PathVariable int id ,@RequestBody ToppingDTO request){
-        return ResponseEntity.ok(toppingService.update(id,request));
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id){

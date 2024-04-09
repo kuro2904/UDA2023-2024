@@ -8,8 +8,6 @@ import java.util.List;
 public interface ToppingService {
     List<ToppingDTO> getAll();
     ToppingDTO getById(int id);
-    ToppingDTO insert(ToppingDTO request);
-    ToppingDTO update(int id, ToppingDTO request);
     String delete(int id);
     List<ToppingDTO> getByProduct(String productId);
 }

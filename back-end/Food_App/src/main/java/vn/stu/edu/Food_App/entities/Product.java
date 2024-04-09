@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -29,4 +31,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+    @OneToMany(mappedBy = "product")
+    List<Topping> toppings;
 }

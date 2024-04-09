@@ -18,4 +18,8 @@ public class Topping {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public Topping(String name){
+        this.name = name;
+    }
 }
