@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import vn.stu.edu.Food_App.dtos.ProductDTO;
 
+import java.util.List;
+
 @Setter
 @Getter
 @Entity
@@ -18,7 +20,8 @@ public class Topping {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-
+    @ManyToMany(mappedBy = "toppings")
+    private List<BillDetail> billDetails;
     public Topping(String name){
         this.name = name;
     }

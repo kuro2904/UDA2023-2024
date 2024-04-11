@@ -1,5 +1,5 @@
 class BackEndConfig {
-  static const String serverAddr = "172.20.0.93:8080";
+  static const String serverAddr = "192.168.1.141:8080";
 
   // static const String serverAddr = "192.168.43.1:8081";
   static const String fetchImageString = "http://$serverAddr/api/images/name/";

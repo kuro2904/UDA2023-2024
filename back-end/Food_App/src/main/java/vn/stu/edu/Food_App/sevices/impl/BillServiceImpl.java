@@ -126,7 +126,22 @@ public class BillServiceImpl implements BillService {
         order.setDetails(details);
 
         // Lưu đơn hàng vào cơ sở dữ liệu và trả về kết quả
-        return mapper.map(billRepository.save(order), BillDTO.class);
+        Bill bill = billRepository.save(order);
+        return new BillDTO(
+                bill.getId(),
+                bill.getUser() == null ? "Unknow" : bill.getUser().getId(),
+                bill.getCus_phone(),
+                bill.getCus_address(),
+                bill.getCreateDate(),
+                bill.getStatus().name(),
+                bill.getPaymentMethod().name(),
+                bill.getDetails().stream().map(detail ->
+                        new BillDetailDTO(detail.getQuantity(),
+                                detail.getProduct().getId(),
+                                detail.getTotal_price(),
+                                detail.getToppings().stream().map(ToppingDTO::new).collect(Collectors.toList()))).collect(Collectors.toList()),
+                bill.getNote()
+        );
     }
 
 
