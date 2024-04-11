@@ -22,5 +22,6 @@ public class BillDetail {
     @JoinColumn(name = "product_id")
     private Product product;
     private String total_price;
-
+    @OneToMany(targetEntity = Topping.class)
+    private List<Topping> toppings;
 }

@@ -23,9 +23,10 @@ public class BillDTO {
     private String discountId;
     private String deliveryManId;
     private String paymentMethod;
+    private String note;
     private List<BillDetailDTO> details;
 
-    public BillDTO(String id, String email, String cus_phone, String cus_address, String createDate, String status, String paymentMethod, List<BillDetailDTO> details) {
+    public BillDTO(String id, String email, String cus_phone, String cus_address, String createDate, String status, String paymentMethod, List<BillDetailDTO> details, String note) {
         this.id = id;
         this.user_email = email;
         this.cus_phone = cus_phone;
@@ -34,6 +35,7 @@ public class BillDTO {
         this.status = status;
         this.paymentMethod = paymentMethod;
         this.details = details;
+        this.note = note;
     }
 
     @Override

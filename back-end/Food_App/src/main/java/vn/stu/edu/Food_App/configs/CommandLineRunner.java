@@ -19,6 +19,9 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CategoryRepository categoryRepository;
+    private final ToppingRepository toppingRepository;
+    private final ProductRepository productRepository;
 
     @Override
     public void run(String... args) {
@@ -79,6 +82,49 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
 
         deliverManRepository.saveAll(List.of(deliverMan1,deliverMan2));
 
+        Topping topping1 = Topping.builder()
+                .name("topping1")
+                .price("123").build();
+        Topping topping2 = Topping.builder()
+                .name("topping2")
+                .price("123").build();
 
+        List<Topping> toppings = toppingRepository.saveAll(List.of(topping2,topping1));
+
+        Category category1 = Category.builder()
+                .name("Category1")
+                .description("asdasd")
+                .build();
+
+        Category category2 = Category.builder()
+                .name("Category2")
+                .description("asdasd")
+                .build();
+
+        categoryRepository.saveAll(List.of(category2,category1));
+
+        Product product = Product.builder()
+                .name("Product1")
+                .price("1234k VND")
+                .description("Product 1")
+                .category(category1)
+                .toppings(toppings)
+                .build();
+
+        Product product1 = Product.builder()
+                .name("Product2")
+                .price("1234k VND")
+                .description("Product 1")
+                .category(category1)
+                .build();
+
+        Product product2 = Product.builder()
+                .name("Product2")
+                .price("1234k VND")
+                .description("Product 1")
+                .category(category2)
+                .build();
+
+        productRepository.saveAll(List.of(product,product1,product2));
     }
 }

@@ -8,7 +8,6 @@ import vn.stu.edu.Food_App.entities.Product;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product,String> {
-    List<Product> findByCategory(Category category);
 
     @Query("SELECT p FROM Product p WHERE p.category = :category")
      List<Product> timTheoCategory(Category category);

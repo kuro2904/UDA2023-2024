@@ -14,6 +14,7 @@ public class Topping {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
+    private String price;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;

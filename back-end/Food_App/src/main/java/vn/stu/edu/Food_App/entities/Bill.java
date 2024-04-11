@@ -37,5 +37,6 @@ public class Bill {
     private DeliverMan deliverMan;
     @Enumerated
     private PaymentMethod paymentMethod;
+    private String note;
 
 }

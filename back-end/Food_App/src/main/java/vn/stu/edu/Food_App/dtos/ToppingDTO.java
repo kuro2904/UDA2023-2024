@@ -13,9 +13,10 @@ import vn.stu.edu.Food_App.entities.Topping;
 public class ToppingDTO {
     private int id;
     private String name;
-
+    private String price;
     public ToppingDTO(Topping topping){
         this.id  = topping.getId();
         this.name = topping.getName();
+        this.price = topping.getPrice();
     }
 }

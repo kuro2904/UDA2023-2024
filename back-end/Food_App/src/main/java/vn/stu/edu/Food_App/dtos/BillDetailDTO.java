@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,6 +17,7 @@ public class BillDetailDTO {
     private int quantity;
     private String productId;
     private String total_price;
+    private List<ToppingDTO> topping = new ArrayList<>();
 
     @Override
     public String toString() {
