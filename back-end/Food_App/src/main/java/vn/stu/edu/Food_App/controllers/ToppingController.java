@@ -1,6 +1,5 @@
 package vn.stu.edu.Food_App.controllers;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import vn.stu.edu.Food_App.dtos.ToppingDTO;
@@ -32,7 +31,10 @@ public class ToppingController {
         return ResponseEntity.ok(toppingService.getByProduct(productId));
     }
 
-
+    @PutMapping("/topping/{id}")
+    public ResponseEntity<ToppingDTO> update(@PathVariable int id, @RequestBody ToppingDTO toppingDTO){
+        return ResponseEntity.ok(toppingService.edit(id, toppingDTO));
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable int id){

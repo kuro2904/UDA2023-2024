@@ -56,4 +56,14 @@ public class ToppingServiceImpl implements ToppingService {
         );
         return toppingRepository.findByProduct(product1).stream().map(ToppingDTO::new).collect(Collectors.toList());
     }
+
+    @Override
+    public ToppingDTO edit(int toppingId, ToppingDTO toppingDTO) {
+        Topping topping = toppingRepository.findById(toppingId).orElseThrow(
+                () -> new ResourceNotFoundException("Topping", "Id", String.valueOf(toppingId))
+        );
+        topping.setName(toppingDTO.getName());
+        topping.setPrice(toppingDTO.getPrice());
+        return new ToppingDTO(toppingRepository.save(topping));
+    }
 }

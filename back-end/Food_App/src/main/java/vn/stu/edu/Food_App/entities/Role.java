@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Setter
 @Getter

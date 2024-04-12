@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.stu.edu.Food_App.entities.Product;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,7 +20,7 @@ public class ProductDTO {
     private String description;
     private String imageUrl;
     private String categoryId;
-    private List<ToppingDTO> topping = new ArrayList<>();
+    private List<ToppingDTO> topping;
 
     public ProductDTO(Product product){
         this.id = product.getId();

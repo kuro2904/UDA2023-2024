@@ -49,9 +49,7 @@ public class ProductServiceImpl implements ProductService  {
 
     @Override
     public List<ProductDTO> getAll() {
-        return productRepository.findAll().stream().map(
-                product -> mapper.map(product,ProductDTO.class)
-        ).collect(Collectors.toList());
+        return productRepository.findAll().stream().map(ProductDTO::new).collect(Collectors.toList());
     }
 
     @Override
@@ -60,26 +58,27 @@ public class ProductServiceImpl implements ProductService  {
         product.setName(productDTO.getName());
         product.setPrice(productDTO.getPrice());
         product.setDescription(productDTO.getDescription());
-        if(image != null && image.getSize() >0)product.setImageUrl(imageService.uploadImage(image));
-        if(productDTO.getCategoryId() != null){
-            Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(
-                    () -> new ResourceNotFoundException("Category ","Id:",productDTO.getCategoryId())
-            );
-            product.setCategory(category);
-        }
-        if(productDTO.getTopping() != null){
+        saveImage(productDTO, image, product);
+
+        // Thêm sản phẩm vào cơ sở dữ liệu
+        product = productRepository.save(product);
+
+        if(productDTO.getTopping() != null) {
             List<Topping> list = new ArrayList<>();
-            for(ToppingDTO toppingDTO : productDTO.getTopping()){
-                Topping topping =toppingRepository.save(new Topping(toppingDTO.getName()));
-                topping.setProduct(product);
+            for (ToppingDTO toppingDTO : productDTO.getTopping()) {
+                // Truyền ID của sản phẩm cho mỗi loại topping
+                Topping topping = new Topping(toppingDTO.getName(), toppingDTO.getPrice(), product);
+                topping = toppingRepository.save(topping);
                 list.add(topping);
             }
+            // Cập nhật danh sách topping của sản phẩm
             product.setToppings(list);
+            // Cập nhật lại sản phẩm sau khi đã thêm topping
+            product = productRepository.save(product);
         }
-        Product product1 = productRepository.save(product);
-        System.out.println(product1.toString());
-        return new ProductDTO(product1);
+        return new ProductDTO(product);
     }
+
 
     @Override
     public ProductDTO editProduct(String id,ProductDTO productDTO, MultipartFile image) throws IOException {
@@ -89,6 +88,11 @@ public class ProductServiceImpl implements ProductService  {
         if(productDTO.getName() != null) product.setName(productDTO.getName());
         if(productDTO.getPrice() != null) product.setPrice(productDTO.getPrice());
         if(productDTO.getDescription() != null) product.setDescription(productDTO.getDescription());
+        saveImage(productDTO, image, product);
+        return mapper.map(productRepository.save(product), ProductDTO.class);
+    }
+
+    private void saveImage(ProductDTO productDTO, MultipartFile image, Product product) throws IOException {
         if(image != null && image.getSize() >0) product.setImageUrl(imageService.uploadImage(image));
         if(productDTO.getCategoryId() != null){
             Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(
@@ -96,7 +100,6 @@ public class ProductServiceImpl implements ProductService  {
             );
             product.setCategory(category);
         }
-        return mapper.map(productRepository.save(product), ProductDTO.class);
     }
 
     @Override
@@ -116,5 +119,22 @@ public class ProductServiceImpl implements ProductService  {
         );
         productRepository.delete(product);
         return "Delete Complete";
+    }
+
+    @Override
+    public ProductDTO addToppingToProduct(String productId, ToppingDTO toppingDTO) {
+        Product product = productRepository.findById(productId).orElseThrow(
+                () -> new ResourceNotFoundException("Product","Id",productId)
+        );
+        Topping topping = new Topping();
+        topping.setName(toppingDTO.getName());
+        topping.setPrice(toppingDTO.getPrice());
+
+        Topping rs = toppingRepository.save(topping);
+
+        product.getToppings().add(rs);
+        rs.setProduct(product);
+        toppingRepository.save(rs);
+        return new ProductDTO(productRepository.save(product));
     }
 }

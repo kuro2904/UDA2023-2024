@@ -4,10 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
 
 @Getter
 @Setter
@@ -36,21 +34,5 @@ public class BillDTO {
         this.paymentMethod = paymentMethod;
         this.details = details;
         this.note = note;
-    }
-
-    @Override
-    public String toString() {
-        return "BillDTO{" +
-                "id='" + id + '\'' +
-                ", user_id='" + user_email + '\'' +
-                ", cus_phone='" + cus_phone + '\'' +
-                ", cus_address='" + cus_address + '\'' +
-                ", createDate='" + createDate + '\'' +
-                ", status='" + status + '\'' +
-                ", discountId='" + discountId + '\'' +
-                ", deliveryManId='" + deliveryManId + '\'' +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", details=" + details +
-                '}';
     }
 }

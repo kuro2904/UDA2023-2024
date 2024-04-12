@@ -2,7 +2,7 @@ package vn.stu.edu.Food_App.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import vn.stu.edu.Food_App.dtos.ProductDTO;
+
 
 import java.util.List;
 
@@ -22,7 +22,9 @@ public class Topping {
     private Product product;
     @ManyToMany(mappedBy = "toppings")
     private List<BillDetail> billDetails;
-    public Topping(String name){
+    public Topping(String name, String price, Product product){
         this.name = name;
+        this.price = price;
+        this.product = product;
     }
 }

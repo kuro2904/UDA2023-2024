@@ -10,4 +10,5 @@ public interface ToppingService {
     ToppingDTO getById(int id);
     String delete(int id);
     List<ToppingDTO> getByProduct(String productId);
+    ToppingDTO edit(int toppingId, ToppingDTO toppingDTO);
 }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.stu.edu.Food_App.dtos.ProductDTO;
+import vn.stu.edu.Food_App.dtos.ToppingDTO;
 import vn.stu.edu.Food_App.sevices.ProductService;
 
 import java.io.IOException;
@@ -50,6 +51,11 @@ public class ProductController {
     @DeleteMapping("/product/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable String id){
         return ResponseEntity.ok(productService.deleteProduct(id));
+    }
+
+    @PutMapping("/product/{productId}/topping")
+    public ResponseEntity<ProductDTO> addTopping(@PathVariable(name = "productId") String productId, @RequestBody ToppingDTO topping){
+        return new ResponseEntity<>(productService.addToppingToProduct(productId, topping),HttpStatus.CREATED);
     }
 
 }

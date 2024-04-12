@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -18,13 +17,4 @@ public class BillDetailDTO {
     private String productId;
     private String total_price;
     private List<ToppingDTO> topping = new ArrayList<>();
-
-    @Override
-    public String toString() {
-        return "BillDetailDTO{" +
-                "quantity=" + quantity +
-                ", productId='" + productId + '\'' +
-                ", total_price='" + total_price + '\'' +
-                '}';
-    }
 }

@@ -26,9 +26,15 @@ public class BillServiceImpl implements BillService {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ToppingRepository toppingRepository;
-    private final ModelMapper mapper;
 
-    public BillServiceImpl(BillRepository billRepository,ToppingRepository toppingRepository, BillDetailRepository billDetailRepository, DeliverManRepository deliverManRepository, DiscountRepository discountRepository, UserRepository userRepository, ProductRepository productRepository, ModelMapper mapper) {
+    public BillServiceImpl(
+            BillRepository billRepository,
+            ToppingRepository toppingRepository,
+            BillDetailRepository billDetailRepository,
+            DeliverManRepository deliverManRepository,
+            DiscountRepository discountRepository,
+            UserRepository userRepository,
+            ProductRepository productRepository) {
         this.billRepository = billRepository;
         this.billDetailRepository = billDetailRepository;
         this.deliverManRepository = deliverManRepository;
@@ -36,7 +42,6 @@ public class BillServiceImpl implements BillService {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.toppingRepository = toppingRepository;
-        this.mapper = mapper;
     }
 
     @Override
@@ -82,6 +87,7 @@ public class BillServiceImpl implements BillService {
                 if (topping == null) {
                     topping = new Topping();
                     topping.setId(toppingDTO.getId());
+                    topping.setPrice(toppingDTO.getPrice());
                     // Lưu topping mới vào cơ sở dữ liệu
                     topping = toppingRepository.save(topping);
                 }
@@ -129,7 +135,7 @@ public class BillServiceImpl implements BillService {
         Bill bill = billRepository.save(order);
         return new BillDTO(
                 bill.getId(),
-                bill.getUser() == null ? "Unknow" : bill.getUser().getId(),
+                bill.getUser() == null ? "Unknown" : bill.getUser().getEmail(),
                 bill.getCus_phone(),
                 bill.getCus_address(),
                 bill.getCreateDate(),

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import vn.stu.edu.Food_App.entities.*;
 import vn.stu.edu.Food_App.repositories.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,7 +56,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
                 .roles(roles_customer)
                 .build();
 
-        userRepository.saveAll(List.of(owner,cus));
+        userRepository.saveAll(List.of(owner, cus));
 
         Discount discount = Discount.builder()
                 .discount_percent(25)
@@ -71,7 +72,7 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
                 .name("WINTER")
                 .build();
 
-        discountRepository.saveAll(List.of(discount2,discount));
+        discountRepository.saveAll(List.of(discount2, discount));
 
         DeliverMan deliverMan1 = DeliverMan.builder()
                 .name("Man1")
@@ -80,16 +81,18 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
         DeliverMan deliverMan2 = DeliverMan.builder()
                 .name("Man2").build();
 
-        deliverManRepository.saveAll(List.of(deliverMan1,deliverMan2));
+        deliverManRepository.saveAll(List.of(deliverMan1, deliverMan2));
 
         Topping topping1 = Topping.builder()
                 .name("topping1")
-                .price("123").build();
+                .price("123")
+                .build();
         Topping topping2 = Topping.builder()
                 .name("topping2")
-                .price("123").build();
+                .price("123")
+                .build();
 
-        List<Topping> toppings = toppingRepository.saveAll(List.of(topping2,topping1));
+        List<Topping> toppings = toppingRepository.saveAll(List.of(topping2, topping1));
 
         Category category1 = Category.builder()
                 .name("Category1")
@@ -101,15 +104,27 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
                 .description("asdasd")
                 .build();
 
-        categoryRepository.saveAll(List.of(category2,category1));
+        categoryRepository.saveAll(List.of(category2, category1));
 
         Product product = Product.builder()
                 .name("Product1")
                 .price("1234k VND")
                 .description("Product 1")
                 .category(category1)
-                .toppings(toppings)
                 .build();
+
+        // Lưu sản phẩm vào cơ sở dữ liệu và nhận ID
+        product = productRepository.save(product);
+
+        // Tạo danh sách topping và truyền ID của sản phẩm
+        List<Topping> productToppings = new ArrayList<>();
+        for (Topping topping : toppings) {
+            topping.setProduct(product);
+            productToppings.add(topping);
+        }
+
+        // Lưu danh sách topping vào cơ sở dữ liệu
+        toppingRepository.saveAll(productToppings);
 
         Product product1 = Product.builder()
                 .name("Product2")
@@ -125,6 +140,6 @@ public class CommandLineRunner implements org.springframework.boot.CommandLineRu
                 .category(category2)
                 .build();
 
-        productRepository.saveAll(List.of(product,product1,product2));
+        productRepository.saveAll(List.of(product, product1, product2));
     }
 }
