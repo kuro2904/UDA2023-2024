@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/product.dart';
 import 'package:food_app/screens/admin/product_management/add_or_update_product.dart';
+import 'package:food_app/screens/admin/product_management/product_management_page.dart';
+import 'package:food_app/utils/dialog.dart';
 
 class ProductBoxList extends StatelessWidget {
   final List<Product> items;
@@ -51,24 +53,31 @@ class ProductBoxList extends StatelessWidget {
                 ),
                 const PopupMenuItem(
                   value: 2,
-                  child: Text('Update'),
-                ),
-                const PopupMenuItem(
-                  value: 3,
                   child: Text('Delete'),
                 ),
               ],
               onSelected: (value) async {
-                if (value == 3) {
-                  // Delete functionality
-                } else if (value == 2) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          AddOrUpdateProductPage(product: product),
-                    ),
-                  );
+                switch (value) {
+                  case 1: {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AddOrUpdateProductPage(product: product),
+                      ),
+                    );
+                    break;
+                  }
+                  case 2: {
+                    final ok = await Product.deleteProduct(product.id);
+                    if (ok) {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => const ProductPage()));
+                    } else {
+                      showAlertDialog(context, "Failed to delete Product", "Error");
+                    }
+                    break;
+                  }
                 }
               },
               child: const Icon(Icons.more_horiz),

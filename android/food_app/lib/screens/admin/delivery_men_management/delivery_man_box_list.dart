@@ -69,19 +69,15 @@ class DeliveryMenBoxListState extends State<DeliveryMenBoxList> {
                 ),
                 PopupMenuItem(
                   value: 2,
-                  child: Text('Update'),
-                ),
-                PopupMenuItem(
-                  value: 3,
                   child: Text('Delete'),
                 ),
               ],
               onSelected: (value) async {
                 switch (value) {
-                  case 3:
+                  case 2:
                     await deleteDeliveryMan(deliveryMan);
                     break;
-                  case 2:
+                  case 1:
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -5,7 +5,9 @@ import 'package:food_app/screens/android/user_options.dart';
 import 'cart_page.dart';
 
 class AndroidMain extends StatefulWidget {
-  const AndroidMain({super.key});
+  const AndroidMain({super.key, this.selectedIndex});
+
+  final int? selectedIndex;
 
   @override
   State<AndroidMain> createState() => AndroidMainState();
@@ -15,6 +17,14 @@ class AndroidMainState extends State<AndroidMain> {
   int _selectedIndex = 0;
 
   final List<Widget> screens = const [HomePage(), CartPage(), UserOptions()];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.selectedIndex != null) {
+      _selectedIndex = widget.selectedIndex!;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:food_app/screens/admin/category_management/category_management_p
 import 'package:food_app/screens/admin/delivery_men_management/delivery_men_management_page.dart';
 import 'package:food_app/screens/admin/discount_management/discount_management_page.dart';
 import 'package:food_app/screens/admin/product_management/product_management_page.dart';
+import 'package:food_app/screens/android/android_main.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -46,6 +47,43 @@ class DashboardPage extends StatelessWidget {
               Icons.discount,
               'Discount',
               const DiscountPage(),
+            ),
+            _buildDashboardItem(
+              context,
+              Icons.app_shortcut,
+              'User Mode',
+              const AndroidMain(),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.popUntil(context, (route) => route.isFirst);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orangeAccent,
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.logout,
+                    size: 40.0,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Log out',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),

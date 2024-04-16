@@ -19,6 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginState extends State<LoginPage> {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +59,11 @@ class _LoginState extends State<LoginPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                _login();
-              },
+              onPressed: (_loading) ? null : _login,
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.blue)
               ),
-              child: const Text('Login'),
+              child: _loading ? const CircularProgressIndicator() : const Text('Login'),
             ),
             const SizedBox(height: 20),
             Row(
@@ -73,7 +72,7 @@ class _LoginState extends State<LoginPage> {
                 const Text('Don\'t have an account?'),
                 TextButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const SignUpPage()));
                   },
                   child: const Text(
                     'Sign up',
@@ -100,21 +99,34 @@ class _LoginState extends State<LoginPage> {
     var header = {
       'Content-Type': 'application/json'
     };
-    Uri url = Uri.parse(BackEndConfig.loginString);
-    var response = await http.post(url,body: jsonEncode(body), headers: header);
-    if(response.statusCode == 200 ){
-      var parser = json.decode(response.body);
-      ClientState().userName = parser['email'];
-      ClientState().role = parser['role'];
-      ClientState().userPassword = parser['password'];
-      ClientState().isLogin = true;
-      ClientState().token = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-      print('User name: ${ClientState().userName}, Role: ${ClientState().role}, Password: ${ClientState().userPassword}');
-      if(ClientState().role == 'ROLE_CUSTOMER'){
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const AndroidMain()));
-      }else{
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DashboardPage()));
+
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      Uri url = Uri.parse(BackEndConfig.loginString);
+      var response = await http.post(url,body: jsonEncode(body), headers: header);
+      if(response.statusCode == 200 ){
+        var parser = json.decode(response.body);
+        ClientState().userName = parser['email'];
+        ClientState().role = parser['role'];
+        ClientState().userPassword = parser['password'];
+        ClientState().isLogin = true;
+        ClientState().token = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+        ClientState().header.addEntries({'Authorization': ClientState().token}.entries);
+        if(ClientState().role == 'ROLE_CUSTOMER'){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const AndroidMain()));
+        }else{
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const DashboardPage()));
+        }
       }
+    } catch (e) {
+      print(e); // TODO: call some log function
+    } finally {
+      setState(() {
+        _loading = false;
+      });
     }
   }
 

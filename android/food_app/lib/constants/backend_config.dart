@@ -1,5 +1,5 @@
 class BackEndConfig {
-  static const String serverAddr = "192.168.1.141:8080";
+  static const String serverAddr = "minutes-played.gl.at.ply.gg:17131";
 
   // static const String serverAddr = "192.168.43.1:8081";
   static const String fetchImageString = "http://$serverAddr/api/images/name/";
@@ -40,4 +40,10 @@ class BackEndConfig {
       "http://$serverAddr/api/auth/super-user/register";
   static const String placeOrderString = "http://$serverAddr/api/orders";
   static const String fetchHistoryOrder = "http://$serverAddr/api/orders/user/";
+  static const String fetchToppingByProduct =
+      "http://$serverAddr/api/toppings/product/";
+  static const String addToppingString = "http://$serverAddr/api/products/product/";
+  static const String updateToppingString = "http://$serverAddr/api/toppings/topping/";
+  static const String deleteToppingString = "http://$serverAddr/api/toppings/";
+  static const String deleteProductString = "http://$serverAddr/api/products/product/";
 }

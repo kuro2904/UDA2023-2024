@@ -20,34 +20,48 @@ class UserOptionState extends State<UserOptions> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (ClientState().isLogin)
-            Container(
-              padding: const EdgeInsets.all(8),
-              child: ItemContainer(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HistoryOrderPage()));
-                },
-                height: 50,
-                children: const [
-                  Text("History"),
-                ],
-              ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: ItemContainer(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const HistoryOrderPage()));
+              },
+              height: 50,
+              children: const [
+                Text("History"),
+              ],
             ),
-          if (ClientState().isLogin)
+          ),
+          Container(
+            padding: const EdgeInsets.all(8),
+            child: ItemContainer(
+              onTap: () {
+                setState(() {
+                  final logOut = ClientState().logout();
+                  if (logOut) {
+                    Navigator.popUntil(context, (route) => route.isFirst);
+                  }
+                });
+              },
+              height: 50,
+              children: const [
+                Text("Log out"),
+              ],
+            ),
+          ),
+          if (ClientState().isAdmin())
             Container(
               padding: const EdgeInsets.all(8),
               child: ItemContainer(
                 onTap: () {
-                    setState(() {
-                      ClientState().logout();
-                    });
+                  Navigator.pop(context);
                 },
                 height: 50,
                 children: const [
-                  Text("Log out"),
+                  Text("Dashboard"),
                 ],
               ),
             ),
