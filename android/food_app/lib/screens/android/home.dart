@@ -4,12 +4,10 @@ import 'package:food_app/constants/backend_config.dart';
 import 'package:food_app/data/category.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/product.dart';
-import 'package:food_app/screens/android/DetailProduct.dart';
+import 'package:food_app/screens/android/detailProduct.dart';
 import 'package:food_app/screens/android/home_components/category_item.dart';
 import 'package:food_app/screens/android/home_components/product_item.dart';
 import 'package:http/http.dart' as http;
-
-import '../../data/OrderDetail.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -142,7 +140,7 @@ class HomePageState extends State<HomePage> {
                       children: snapshot.data!.map<Widget>((e) {
                         return ProductItem(
                           product: e,
-                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => DetailProduct(context: context ,product: e))),
+                          onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetail(product: e))),
                         );
                       }).toList(),
                     );

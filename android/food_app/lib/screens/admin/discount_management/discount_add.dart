@@ -64,77 +64,73 @@ class AddDiscountPageState extends State<AddDiscountPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            Expanded(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Discount Id',
-                      ),
-                      controller: discountId,
-                    ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Discount Id',
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Discount Percent',
-                      ),
-                      controller: discountPercent,
-                      inputFormatters: [_onlyNumbersFormatter],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Start Date',
-                      ),
-                      controller: discountStartDate,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Expired Date',
-                      ),
-                      controller: discountExpiredDate,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        performInsert(
-                          discountId.text,
-                          int.tryParse(discountPercent.text) ??
-                              0, // Parse and handle null values
-                          discountStartDate.text,
-                          discountExpiredDate.text,
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                      ),
-                      child: const Text(
-                        'Add',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+                  controller: discountId,
+                ),
               ),
-            )
-          ],
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Discount Percent',
+                  ),
+                  controller: discountPercent,
+                  inputFormatters: [_onlyNumbersFormatter],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Start Date',
+                  ),
+                  controller: discountStartDate,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Expired Date',
+                  ),
+                  controller: discountExpiredDate,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    performInsert(
+                      discountId.text,
+                      int.tryParse(discountPercent.text) ??
+                          0, // Parse and handle null values
+                      discountStartDate.text,
+                      discountExpiredDate.text,
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                  ),
+                  child: const Text(
+                    'Add',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

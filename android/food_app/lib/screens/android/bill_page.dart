@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:food_app/data/client_state.dart';
 import 'package:food_app/data/payment_method.dart';
@@ -18,6 +19,7 @@ class Bill extends StatefulWidget {
 class BillState extends State<Bill> {
   TextEditingController cusPhoneController = TextEditingController();
   TextEditingController cusAddressController = TextEditingController();
+  TextEditingController noteController = TextEditingController();
   PaymentMethod paymentMethod = PaymentMethod.COD;
   late Future<List<Discount>> futureDiscount;
   Discount? selectedDiscount;
@@ -41,14 +43,17 @@ class BillState extends State<Bill> {
       'status': 'REQUEST',
       'details': ClientState().cart
     };
+    if (noteController.text.isNotEmpty) {
+      body['note'] = noteController.text;
+    }
     var response = await http.post(url,
         headers: ClientState().header, body: jsonEncode(body));
     if (response.statusCode == 201) {
-      Navigator.pop(context);
+      Navigator.pop(context, 'ok');
       showAlertDialog(
           context, 'Bill total: \n${response.body}', 'Place Order Successful!');
     } else {
-      Navigator.pop(context);
+      Navigator.pop(context, 'failed');
       showAlertDialog(context, 'Status code: ${response.statusCode}', 'Error!');
     }
   }
@@ -56,6 +61,7 @@ class BillState extends State<Bill> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: Center(
         child: Column(
@@ -75,6 +81,14 @@ class BillState extends State<Bill> {
                 controller: cusAddressController,
                 decoration: const InputDecoration(
                     border: OutlineInputBorder(), hintText: 'Address'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                controller: noteController,
+                decoration: const InputDecoration(
+                    border: OutlineInputBorder(), hintText: 'Note'),
               ),
             ),
             const Padding(

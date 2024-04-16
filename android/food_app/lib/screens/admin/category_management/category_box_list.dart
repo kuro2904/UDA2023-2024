@@ -92,17 +92,13 @@ class CategoryBoxList extends StatelessWidget {
                   ),
                   const PopupMenuItem(
                     value: 2,
-                    child: Text('Update'),
-                  ),
-                  const PopupMenuItem(
-                    value: 3,
                     child: Text('Delete'),
                   ),
                 ],
                 onSelected: (value) async {
-                  if (value == 3) {
+                  if (value == 2) {
                     await deleteCategory(category, context);
-                  } else if (value == 2) {
+                  } else if (value == 1) {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
