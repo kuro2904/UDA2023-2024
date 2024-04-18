@@ -41,6 +41,7 @@ class CartPageState extends State<CartPage> {
                             product: ClientState().cart[index].product,
                             inCartId: index,
                             selectedTopping: ClientState().cart[index].toppings,
+                            selectedPrice: ClientState().cart[index].selectionPrice,
                           )
                       )
                     );

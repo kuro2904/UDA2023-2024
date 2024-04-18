@@ -9,11 +9,12 @@ import 'package:food_app/utils/dialog.dart';
 import '../../constants/backend_config.dart';
 
 class ProductDetail extends StatefulWidget {
-  const ProductDetail({super.key, required this.product, this.selectedTopping, this.inCartId});
+  const ProductDetail({super.key, required this.product, this.selectedTopping, this.inCartId, this.selectedPrice});
 
   final Product product;
   final List<int>? selectedTopping;
   final int? inCartId;
+  final double? selectedPrice;
 
   @override
   State<StatefulWidget> createState() {
@@ -28,6 +29,7 @@ class _ProductDetailState extends State<ProductDetail> {
   late Future<List<Map<String, dynamic>>> _toppings;
   bool updateMode = false;
   List<int> selectedToppings = [];
+  double selectedPrice = 0;
 
 
   @override
@@ -37,6 +39,7 @@ class _ProductDetailState extends State<ProductDetail> {
     if (widget.selectedTopping != null && widget.inCartId != null) {
       updateMode = true;
       selectedToppings = widget.selectedTopping!;
+      selectedPrice = widget.selectedPrice!;
       _quantity.text = ClientState().cart[widget.inCartId!].quantity.toString();
     }
   }
@@ -122,10 +125,13 @@ class _ProductDetailState extends State<ProductDetail> {
                                     value: selectedToppings.contains(snapshot.data![index]['id']),
                                     onChanged: (selectedValue) {
                                       setState(() {
+                                        double toppingPrice = double.parse(snapshot.data![index]['price']);
                                         if (selectedValue!) {
                                           selectedToppings.add(snapshot.data![index]['id']);
+                                          selectedPrice += toppingPrice;
                                         } else {
                                           selectedToppings.remove(snapshot.data![index]['id']);
+                                          selectedPrice -= toppingPrice;
                                         }
                                       });
                                     },
@@ -204,7 +210,7 @@ class _ProductDetailState extends State<ProductDetail> {
       merge = await _mergeDialog(duplicated);
     }
     ClientState().addToCart(
-      OrderDetail(quantity: quantity, product: widget.product, toppings: selectedToppings),
+      OrderDetail(quantity: quantity, product: widget.product, toppings: selectedToppings, selectionPrice: selectedPrice),
       mergeWith: merge == -1 ? null : merge
     );
     Navigator.of(context).pop();
@@ -223,12 +229,12 @@ class _ProductDetailState extends State<ProductDetail> {
     }
     if (merge != -1) {
       ClientState().addToCart(
-        OrderDetail(quantity: quantity, product: widget.product, toppings: selectedToppings),
+        OrderDetail(quantity: quantity, product: widget.product, toppings: selectedToppings, selectionPrice: selectedPrice),
         mergeWith: merge,
         current: widget.inCartId!
       );
     } else {
-      ClientState().updateCart(widget.inCartId!, OrderDetail(quantity: quantity, product: widget.product, toppings: selectedToppings));
+      ClientState().updateCart(widget.inCartId!, OrderDetail(quantity: quantity, product: widget.product, toppings: selectedToppings, selectionPrice: selectedPrice));
     }
     Navigator.of(context).pop();
   }

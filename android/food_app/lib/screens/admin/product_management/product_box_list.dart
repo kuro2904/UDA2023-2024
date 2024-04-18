@@ -17,70 +17,75 @@ class ProductBoxList extends StatelessWidget {
       itemCount: items.length,
       itemBuilder: (context, index) {
         final product = items[index];
-        return Card(
-          elevation: 4,
-          color: Colors.greenAccent,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: ListTile(
-            leading: SizedBox(
-              width: 100,
-              height: 100,
-              child: product.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      BackEndConfig.fetchImageString + product.imageUrl!,
-                      fit: BoxFit.cover,
-                    )
-                  : const Center(child: Text('No image')),
-            ),
-            title: Text(
-              product.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
+        return SizedBox(
+          height: 90,
+          child: Card(
+            elevation: 4,
+            color: Colors.greenAccent,
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            child: ListTile(
+              leading: SizedBox(
+                width: 100,
+                height: 100,
+                child: product.imageUrl!.isNotEmpty
+                    ? Image.network(
+                  BackEndConfig.fetchImageString + product.imageUrl!,
+                  fit: BoxFit.cover,
+                )
+                    : const Center(child: Text('No image')),
               ),
-            ),
-            subtitle: Text(
-              product.description,
-              style: const TextStyle(
-                fontSize: 16,
+              title: Text(
+                product.name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
-            ),
-            trailing: PopupMenuButton<int>(
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 1,
-                  child: Text('Show Details'),
+              subtitle: Text(
+                product.description,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: const TextStyle(
+                  fontSize: 16,
                 ),
-                const PopupMenuItem(
-                  value: 2,
-                  child: Text('Delete'),
-                ),
-              ],
-              onSelected: (value) async {
-                switch (value) {
-                  case 1: {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            AddOrUpdateProductPage(product: product),
-                      ),
-                    );
-                    break;
-                  }
-                  case 2: {
-                    final ok = await Product.deleteProduct(product.id);
-                    if (ok) {
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => const ProductPage()));
-                    } else {
-                      showAlertDialog(context, "Failed to delete Product", "Error");
+              ),
+              trailing: PopupMenuButton<int>(
+                itemBuilder: (context) => [
+                  const PopupMenuItem(
+                    value: 1,
+                    child: Text('Show Details'),
+                  ),
+                  const PopupMenuItem(
+                    value: 2,
+                    child: Text('Delete'),
+                  ),
+                ],
+                onSelected: (value) async {
+                  switch (value) {
+                    case 1: {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              AddOrUpdateProductPage(product: product),
+                        ),
+                      );
+                      break;
                     }
-                    break;
+                    case 2: {
+                      final ok = await Product.deleteProduct(product.id);
+                      if (ok) {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => const ProductPage()));
+                      } else {
+                        showAlertDialog(context, "Failed to delete Product", "Error");
+                      }
+                      break;
+                    }
                   }
-                }
-              },
-              child: const Icon(Icons.more_horiz),
+                },
+                child: const Icon(Icons.more_horiz),
+              ),
             ),
           ),
         );

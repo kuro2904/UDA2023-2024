@@ -10,7 +10,7 @@ import '../../../screens/admin/category_management/category_management_page.dart
 class CategoryBoxList extends StatelessWidget {
   final List<Category> items;
 
-  const CategoryBoxList(this.items, {Key? key}) : super(key: key);
+  const CategoryBoxList(this.items, {super.key});
 
   Future<void> deleteCategory(Category item, BuildContext context) async {
     final header = {
@@ -54,34 +54,41 @@ class CategoryBoxList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        padding: const EdgeInsets.all(20),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final category = items[index];
-          return Card(
+    return ListView.builder(
+      padding: const EdgeInsets.all(20),
+      itemCount: items.length,
+      itemBuilder: (context, index) {
+        final category = items[index];
+        return SizedBox(
+          height: 90,
+          child: Card(
             color: Colors.greenAccent,
             margin: const EdgeInsets.symmetric(vertical: 10),
             child: ListTile(
-              leading: category.imageUrl!.isNotEmpty
-                  ? Image.network(
-                      BackEndConfig.fetchImageString + category.imageUrl!,
-                      fit: BoxFit.cover,
-                      width: 100,
-                      height: 100,
-                    )
-                  : const SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: Center(child: Text('No image')),
-                    ),
+              leading: SizedBox(
+                width: 100,
+                height: 100,
+                child: category.imageUrl!.isNotEmpty
+                    ? Image.network(
+                  BackEndConfig.fetchImageString + category.imageUrl!,
+                  fit: BoxFit.cover,
+                  width: 100,
+                  height: 100,
+                )
+                    : const SizedBox(
+                  width: 100,
+                  height: 100,
+                  child: Center(child: Text('No image')),
+                ),
+              ),
               title: Text(
                 category.name,
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               subtitle: Text(
                 category.description,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: const TextStyle(fontWeight: FontWeight.w400),
               ),
               trailing: PopupMenuButton<int>(
@@ -111,9 +118,9 @@ class CategoryBoxList extends StatelessWidget {
                 child: const Icon(Icons.more_horiz),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -53,7 +53,7 @@ class CartItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '\$${orderDetail.product.price}',
+                    '\$${orderDetail.getTotalPrice()}k VNĐ',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.blue,
