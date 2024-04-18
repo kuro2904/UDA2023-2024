@@ -51,10 +51,10 @@ class BillState extends State<Bill> {
     if (response.statusCode == 201) {
       Navigator.pop(context, 'ok');
       showAlertDialog(
-          context, 'Bill total: \n${response.body}', 'Place Order Successful!');
+          context, 'Bill total: \n${ClientState().getCartTotalPrice()}k VNĐ', 'Place Order Successful!');
     } else {
       Navigator.pop(context, 'failed');
-      showAlertDialog(context, 'Status code: ${response.statusCode}', 'Error!');
+      showAlertDialog(context, 'Place order failed try again later. We sorry for your inconvenient', 'Error!');
     }
   }
 

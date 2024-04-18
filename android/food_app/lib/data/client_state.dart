@@ -123,6 +123,16 @@ class ClientState {
         {"Content-Type": "application/json; charset=UTF-8"}.entries);
   }
 
+  double getCartTotalPrice() {
+    double total = 0;
+
+    for (OrderDetail i in cart) {
+      total += i.getTotalPrice();
+    }
+
+    return total;
+  }
+
   List<int> getCartDuplicate(int currentId, String productId, List<int> selectedTopping) {
     List<int> duplicatedList = [];
     for (int i = 0; i < cart.length; i++) {

@@ -8,13 +8,15 @@ class OrderDetail {
   final Product product;
   final String? totalPrice;
   List<int>? toppings;
+  double? selectionPrice;
 
   OrderDetail({
     this.id,
     this.totalPrice,
     required this.quantity,
     required this.product,
-    this.toppings
+    this.toppings,
+    this.selectionPrice
   });
 
   static Future<OrderDetail> fromJson(Map<String, dynamic> json) async {
@@ -40,6 +42,15 @@ class OrderDetail {
       data['topping'] = listToppings;
     }
     return data;
+  }
+
+  double getTotalPrice() {
+    String productPriceString = product.price.replaceAll('k VND', '');
+    double productPrice = double.parse(productPriceString);
+    if (selectionPrice != null) {
+      productPrice += (selectionPrice! / 1000);
+    }
+    return productPrice * quantity;
   }
 
   @override
